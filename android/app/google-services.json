@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "328555323438",
+    "firebase_url": "https://stock4u-f97f2.firebaseio.com",
+    "project_id": "stock4u-f97f2",
+    "storage_bucket": "stock4u-f97f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328555323438:android:df1d674d1ab98db4577fbf",
+        "android_client_info": {
+          "package_name": "com.insight.stock4u"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "328555323438-g5karv1nmcu7nr221c3q4o3eua4apc3m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.insight.stock4u",
+            "certificate_hash": "b62aa99c76bbd5d3d95bdf4893fcdab0faeb9183"
+          }
+        },
+        {
+          "client_id": "328555323438-cr6qf8jjba8i0rvqc2ammqffko54ivhq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEbFYefCO-fQvoGktQ2BItf_qwZ5mD9yM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "328555323438-cr6qf8jjba8i0rvqc2ammqffko54ivhq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

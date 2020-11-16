@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stock4U</string>
+    <string name="facebook_app_id">670420680335769</string>
+    <string name="fb_login_protocol_scheme">fb670420680335769</string>
+</resources>
