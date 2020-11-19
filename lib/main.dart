@@ -34,15 +34,18 @@ class MyApp extends StatelessWidget {
         nextScreen: FutureBuilder(
           future: Firebase.initializeApp(),
           builder: (context, snapshot) {
-            return StreamBuilder<User>(
-              stream: FirebaseAuth.instance.authStateChanges(),
+            return FutureBuilder<bool>(
+              future: UsuarioService().isAuthenticated(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active)
-                  return Home();
-                else if (snapshot.connectionState == ConnectionState.waiting)
-                  return Center(child: CircularProgressIndicator());
+                if (snapshot.hasData)
+                {
+                  if (snapshot.data == true)
+                    return Home();
+                  else
+                    return Login();
+                }
                 else
-                  return Login();
+                  return Center(child: CircularProgressIndicator());
               }
             );
           },

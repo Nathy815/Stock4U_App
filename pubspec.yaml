@@ -24,11 +24,14 @@ dependencies:
   flutter:
     sdk: flutter
   animated_splash_screen: ^1.0.1+2
-  page_transition: "^1.1.7+2"
   intl:
   http:
   dio:
   shared_preferences: ^0.5.12+4
+  flutter_datetime_picker: ^1.4.0
+  fl_animated_linechart: ^1.1.4
+  flutter_launcher_icons: "^0.7.0"
+  mask_text_input_formatter:
 
   # Firebase
   firebase_core:
@@ -45,11 +48,24 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  ios: true
+  android: true
+  image_path: "assets/launcher/icon.png"
+  image_path_ios: "assets/launcher/icon.png"
+  image_path_android: "assets/launcher/icon.png"
+  adaptive_icon_background: "assets/launcher/background.png"
+  adaptive_icon_foreground: "assets/launcher/foreground.png"
+  
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
+  fonts:
+    - family: Stock4U
+      fonts:
+       - asset: assets/fonts/Stock4U.ttf
   assets:
     - assets/images/logo_facebook.png
     - assets/images/logo_google.png

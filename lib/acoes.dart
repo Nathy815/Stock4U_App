@@ -8,6 +8,8 @@ import 'models/acaoModel.dart';
 import 'services/acaoService.dart';
 
 class Acoes extends StatefulWidget {
+  String equityID;
+  Acoes({this.equityID});
   AcoesForm createState() => AcoesForm();
 }
 
@@ -30,10 +32,10 @@ class AcoesForm extends State<Acoes> {
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
         elevation: 0,
         iconTheme: IconThemeData(
-          color: Color.fromRGBO(51, 51, 51, 1)
+          color: Colors.white
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: Visibility(visible: widget.equityID == null, child: BottomNavigationBar(
         selectedFontSize: 0,
         currentIndex: 1,
         items: [
@@ -57,7 +59,7 @@ class AcoesForm extends State<Acoes> {
           else if (value == 2)
             Navigator.of(context).push(_createRoute(Perfil()));
         },
-      ),
+      )),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -120,7 +122,7 @@ class AcoesForm extends State<Acoes> {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (BuildContext context) {
+                        builder: (BuildContext context3) {
                           return AlertDialog(
                             title: Text("Atenção!"),
                             content: Text("Tem certeza que deseja adicionar essa ação à sua lista?"),
@@ -129,11 +131,15 @@ class AcoesForm extends State<Acoes> {
                                 child: Text("Sim"),
                                 onPressed: () async {
                                   setState(() { loading = true; });
-                                  var _result = await AcaoService().add(item.ticker, item.name);
+                                  var _result = null;
+                                  if (widget.equityID == null)
+                                    _result = await AcaoService().add(item.ticker, item.name);
+                                  else
+                                    _result = await AcaoService().addCompare(item.ticker, item.name, widget.equityID);
                                   setState(() { loading = false; });
                                   showDialog(
                                     context: context,
-                                    builder: (BuildContext context) {
+                                    builder: (BuildContext context4) {
                                       return AlertDialog(
                                         title: Text(_result == null ? "Sucesso" : "Erro"),
                                         content: Text(_result == null ? "Ação adicionada com sucesso!" : _result),
@@ -143,7 +149,10 @@ class AcoesForm extends State<Acoes> {
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                               Navigator.of(context2).pop();
-                                              Navigator.of(context).push(_createRoute(Home()));
+                                              Navigator.of(context3).pop();
+                                              Navigator.of(context4).pop();
+                                              if (widget.equityID == null)
+                                                Navigator.of(context).push(_createRoute(Home()));
                                             }
                                           )
                                         ]

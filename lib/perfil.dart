@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'components/stock4_u_icons.dart' as CustomIcons;
 import 'login.dart';
 import 'home.dart';
 import 'acoes.dart';
 import 'services/usuarioService.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'perfil/editPerfil.dart';
 
 class Perfil extends StatefulWidget {
   PerfilForm createState() => PerfilForm();
@@ -66,7 +67,10 @@ class PerfilForm extends State<Perfil> {
                   }
                 );
               }
-              print(opcao);
+              else {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(_createRoute(EditPerfil()));
+              }
             },
             itemBuilder: (BuildContext context) {
               return ["Editar", "Sair", "Excluir Conta"].map((String opcao) {
@@ -149,7 +153,7 @@ class PerfilForm extends State<Perfil> {
                           padding: EdgeInsets.only(top: 20),
                           child: ListTile(
                             leading: Icon(
-                              Icons.person, 
+                              CustomIcons.Stock4U.transgender, 
                               color: Color.fromRGBO(215, 0, 0, 1),
                             ),
                             title: Text("Sexo"),
@@ -176,8 +180,8 @@ class PerfilForm extends State<Perfil> {
                             ),
                             title: Text("Endereço"),
                             subtitle: Text(
-                              snapshot.data.address.zipCode == null ? "-" : 
-                              snapshot.data.address.local + ", " + snapshot.data.address.number + (snapshot.data.address.compliment == null ? "" : ", " + snapshot.data.address.compliment) + " - " + snapshot.data.address.neighborhood + " - " + snapshot.data.address.city + "/" + snapshot.data.address.state
+                              snapshot.data.address == null || snapshot.data.address.length == 0 ? "-" : 
+                              snapshot.data.address.toString().replaceAll(' - CEP', (snapshot.data.number == null ? "s/n" : ", " + snapshot.data.number) + (snapshot.data.compliment == null ? "" : ", " + snapshot.data.compliment) + " - CEP")
                             ),
                           )
                         ),
@@ -206,24 +210,32 @@ class PerfilForm extends State<Perfil> {
                   child: Column (
                     children: <Widget>[
                       Center(
-                        child: SizedBox (
+                        child: Container (
                           width: 200,
                           height: 200,
-                          child: RaisedButton(
-                            child: snapshot.data.image != null ? 
-                            Center(child: Image.network(snapshot.data.image)) :
-                            Center(child: Text("Sem imagem")),
+                          decoration: BoxDecoration(
                             color: Colors.white,
-                            textColor: Color.fromRGBO(215, 0, 0, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(200.0),
-                              side: BorderSide(
-                                color: Color.fromRGBO(215, 0, 0, 1),
-                                width: 2
-                              )
-                            ),
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Home()))
+                            borderRadius: BorderRadius.circular(500),
+                            border: Border.all(
+                              color: Color.fromRGBO(215, 0, 0, 1), 
+                              width: 3
+                            )
                           ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(500),
+                            child: Image.network(
+                              snapshot.data.image,
+                              errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                return Center(
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 150,
+                                    color: Color.fromRGBO(215, 0, 0, 1)
+                                  )
+                                );
+                              },
+                            )
+                          )
                         )
                       )
                     ]

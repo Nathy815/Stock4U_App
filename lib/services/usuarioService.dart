@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stock_app/models/enderecoModel.dart';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import '../models/usuarioModel.dart';
 
 class UsuarioService {
@@ -64,7 +65,7 @@ class UsuarioService {
       if (result.status == FacebookLoginStatus.loggedIn) {
         final token = result.accessToken.token;
         final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,email,picture&access_token=' + token.toString());
+            'https://graph.facebook.com/v2.12/me?fields=name,email,picture&access_token=' + token);
         Map<String, dynamic> profile = json.decode(graphResponse.body);
 
         var _result = await create(profile['name'].toString(), profile['email'].toString());
@@ -76,7 +77,7 @@ class UsuarioService {
           if (_auth.currentUser != null)
           {
             await salvarInformacao('userToken', await _auth.currentUser.getIdToken());
-            await salvarInformacao('userImage', profile['picture']['data']['url'].toString() + "?height=300");
+            await salvarInformacao('userImage', _auth.currentUser.photoURL + "?height=800&access_token=" + token);
           }
 
           return null;
@@ -112,7 +113,7 @@ class UsuarioService {
         await _auth.signInWithCredential(credential);
         if (_auth.currentUser != null) {
           await salvarInformacao('userToken', await _auth.currentUser.getIdToken());
-          await salvarInformacao('userImage', _googleSignIn.currentUser.photoUrl);
+          await salvarInformacao('userImage', _googleSignIn.currentUser.photoUrl.replaceAll('s96-c', 's1000-c'));
         }
         
         return null;
@@ -191,10 +192,15 @@ class UsuarioService {
 
   Future<bool> isAuthenticated() async {
     final prefs = await SharedPreferences.getInstance();
-    print('userID: ' + prefs.getString("userID"));
-    print('userToken: ' + prefs.getString("userToken"));
     if (prefs.getString("userID") != null && prefs.getString("userToken") != null)
-      return true;
+    {
+      if (_auth.currentUser != null &&
+          (await _facebookLogin.isLoggedIn ||
+          await _googleSignIn.isSignedIn()))
+        return true;
+      else
+        await deleteInformacoes();
+    }
     return false;
   }
 
@@ -223,15 +229,9 @@ class UsuarioService {
           image: _imagem,
           gender: _response['gender'] != null ? _response['gender'].toString() : null,
           birthDate: _response['birthDate'] != null ? DateTime.parse(_response['birthDate'].toString()) : null,
-          address: new EnderecoModel(
-            zipCode: _response['zipCode'] != null ? _response['zipCode'].toString() : null,
-            local: _response['local'] != null ? _response['local'].toString() : null,
-            number: _response['number'] != null ? _response['number'].toString() : null,
-            compliment: _response['compliment'] != null ? _response['compliment'].toString() : null,
-            neighborhood: _response['neighborhood'] != null ? _response['neighborhood'].toString() : null,
-            city: _response['city'] != null ? _response['city'].toString() : null,
-            state: _response['state'] != null ? _response['state'].toString() : null
-          )
+          address: _response['address'] != null ? _response['address'].toString() : null,
+          number: _response['number'] != null ? _response['number'].toString() : null,
+          compliment: _response['compliment'] != null ? _response['compliment'].toString() : null
         );
       }
       else
@@ -240,8 +240,9 @@ class UsuarioService {
       }
   }
 
-  Future<EnderecoModel> getAddress(String termo) async {
+  Future<String> getAddress(String termo) async {
     final prefs = await SharedPreferences.getInstance();
+    print('cep: ' + termo);
     var _result = await http.get(_apiURL + "api/user/address/" + termo,
                                  headers: {
                                    'Authorization': 'Bearer ' + prefs.getString("userToken")
@@ -250,15 +251,16 @@ class UsuarioService {
     if (_result.statusCode == 200)
     {
       var _response = json.decode(_result.body);
-      return new EnderecoModel(
-        zipCode: _response['cep'].toString(),
-        local: _response['logradouro'].toString(),
-        neighborhood: _response['bairro'].toString(),
-        city: _response['localidade'].toString(),
-        state: _response['uf'].toString()
-      );
+      
+      var _logradouro = _response['logradouro'].toString();
+      var _bairro = _response['bairro'] != null ? ", " + _response['bairro'].toString() : "";
+      var _cidade = _response['localidade'] != null ? " - " + _response['localidade'].toString() : "";
+      var _uf = _response['uf'] != null ? "/" + _response['uf'].toString() : "";
+
+      return (_logradouro + _bairro + " - CEP: " + termo + _cidade + _uf);
     }
 
+    print('erro: ' + _result.statusCode.toString() + ' com termo ' + termo);
     return null;
   }
 
@@ -282,7 +284,6 @@ class UsuarioService {
   Future<bool> salvarInformacao(String key, String value) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);
-    print('saved: ' + prefs.getString(key));
     return true;
   }
 
@@ -294,11 +295,43 @@ class UsuarioService {
   }
 
   Future<void> logout() async {
-    if (await _facebookLogin.isLoggedIn) await _facebookLogin.logOut();
+    if (await _facebookLogin.isLoggedIn) {
+      await _facebookLogin.logOut();
+    }
     if (await _googleSignIn.isSignedIn()) { 
       await _googleSignIn.signOut();
     }
     if (_auth.currentUser != null) await _auth.signOut();
     await deleteInformacoes();
+  }
+
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
+  Future<String> update(UsuarioModel model) async {
+    try
+    {
+      var _data = new FormData.fromMap({
+        "id": model.id,
+        "birthDate": model.birthDate,
+        "image": model.imageFile,
+        "gender": model.gender,
+        "address": model.address,
+        "number": model.number,
+        "compliment": model.compliment
+      });
+      
+      var _result = await new Dio().patch(_apiURL + "api/user/update",
+                                          data: _data);
+
+      if (_result.statusCode == 200)
+        return null;
+
+      return "Falha ao editar perfil. Tente novamente mais tarde. (Erro u001)"; 
+    }
+    catch(e) {
+      return "Falha ao editar perfil. Tente novamente mais tarde. (Erro u002)"; 
+    }
   }
 }

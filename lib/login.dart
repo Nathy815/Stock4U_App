@@ -148,7 +148,10 @@ class LoginForm extends State<Login> {
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EsqueciSenha())),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(_createRoute(EsqueciSenha()));
+                            },
                             child: Text(
                               "Esqueceu sua senha?",
                               style: TextStyle(
