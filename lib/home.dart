@@ -55,7 +55,57 @@ class HomeForm extends State<Home> {
               itemBuilder: (context, index) {
                 var item = snapshot.data[index];
                 return GestureDetector(
-                  onTap: () => Navigator.of(context).push(_createRoute(Resumo(item))),
+                  onTap: () {
+                    //Navigator.of(context).pop();
+                    Navigator.of(context).push(_createRoute(Resumo(item)));
+                  },
+                  onLongPress: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context2) {
+                        return AlertDialog(
+                          title: Text("Atenção!"),
+                          content: Text("Tem certeza que deseja excluir essa ação da sua lista?"),
+                          actions: [
+                            FlatButton(
+                              child: Text("Sim"),
+                              onPressed: () async {
+                                var _result = await AcaoService().delete(item.id);
+                                Navigator.of(context).pop(context2);
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context3) {
+                                    return AlertDialog(
+                                      title: Text(_result ? "Sucesso" : "Erro"),
+                                      content: Text(_result ? "Ação excluída com sucesso!" : "Falha ao excluir ação. Tente novamente mais tarde."),
+                                      actions: [
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context3).pop();
+                                            if (_result) Navigator.of(context).push(_createRoute(Home()));
+                                          }, 
+                                          child: Text("OK")
+                                        )
+                                      ],
+                                    );
+                                  }
+                                );
+                              },
+                            ),
+                            FlatButton(
+                              onPressed: null, 
+                              child: Text(
+                                "Cancelar", 
+                                style: TextStyle(
+                                  color: Colors.black38
+                                )
+                              )
+                            )
+                          ],
+                        );
+                      }
+                    );
+                  },
                   child: Padding(
                     padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                     child: Card(
@@ -104,7 +154,7 @@ class HomeForm extends State<Home> {
                               )
                             ),
                             Expanded(
-                              flex: 4,
+                              flex: 6,
                               child: Column(
                                 children: [
                                   Padding(

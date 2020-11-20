@@ -13,6 +13,7 @@ class Login extends StatefulWidget {
 class LoginForm extends State<Login> {
   String nome, email, senha;
   bool cadastro = false;
+  bool loading = false;
   final GlobalKey<FormState> login = GlobalKey<FormState>();
 
   @override  
@@ -175,7 +176,10 @@ class LoginForm extends State<Login> {
                           ),
                         ),
                         child: FlatButton(
-                          child: Text(
+                          child: 
+                          loading ?
+                          CircularProgressIndicator() : 
+                          Text(
                             cadastro ? "Salvar" : "Entrar",
                             style: TextStyle(
                               color: Colors.white
@@ -184,13 +188,14 @@ class LoginForm extends State<Login> {
                           onPressed: () async {
                             if (login.currentState.validate())
                             {
+                              setState(() { loading = true; });
                               login.currentState.save();
                               String _mensagem;
                               if (cadastro)
                                 _mensagem = await UsuarioService().register(nome, email, senha);
                               else
                                 _mensagem = await UsuarioService().login(email, senha);
-
+                              setState(() { loading = false; });
                               if (_mensagem == null) {
                                 if (cadastro) {
                                   showDialog(

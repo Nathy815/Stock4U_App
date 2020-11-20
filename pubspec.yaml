@@ -30,7 +30,6 @@ dependencies:
   shared_preferences: ^0.5.12+4
   flutter_datetime_picker: ^1.4.0
   fl_animated_linechart: ^1.1.4
-  flutter_launcher_icons: "^0.7.0"
   mask_text_input_formatter:
 
   # Firebase
@@ -47,15 +46,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.7.0
 
 flutter_icons:
   ios: true
   android: true
   image_path: "assets/launcher/icon.png"
-  image_path_ios: "assets/launcher/icon.png"
-  image_path_android: "assets/launcher/icon.png"
-  adaptive_icon_background: "assets/launcher/background.png"
-  adaptive_icon_foreground: "assets/launcher/foreground.png"
   
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

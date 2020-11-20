@@ -41,6 +41,18 @@ class AcaoService {
     return _lista;
   }
 
+  Future<bool> delete(String equityID) async {
+    var prefs = await SharedPreferences.getInstance();
+    print('equity: ' + equityID);
+    print('user: ' + prefs.getString("userID"));
+    var _result = await http.delete(_apiURL + "api/equity/delete/" + equityID + "/" + prefs.getString("userID"));
+
+    if (_result.statusCode == 200)
+      return true;
+
+    return false;
+  }
+
   Future<AcaoModel> get(String equityID) async {
     var prefs = await SharedPreferences.getInstance();
     var _body = json.encode({ "UserID": prefs.getString("userID"), "EquityID": equityID});

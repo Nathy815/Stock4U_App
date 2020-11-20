@@ -32,7 +32,7 @@ class AcoesForm extends State<Acoes> {
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
         elevation: 0,
         iconTheme: IconThemeData(
-          color: Colors.white
+          color: Color.fromRGBO(51, 51, 51, 1)
         ),
       ),
       bottomNavigationBar: Visibility(visible: widget.equityID == null, child: BottomNavigationBar(
@@ -137,6 +137,7 @@ class AcoesForm extends State<Acoes> {
                                   else
                                     _result = await AcaoService().addCompare(item.ticker, item.name, widget.equityID);
                                   setState(() { loading = false; });
+                                  Navigator.of(context3).pop();
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context4) {
@@ -147,9 +148,6 @@ class AcoesForm extends State<Acoes> {
                                           FlatButton(
                                             child: Text("OK"),
                                             onPressed: () {
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context2).pop();
-                                              Navigator.of(context3).pop();
                                               Navigator.of(context4).pop();
                                               if (widget.equityID == null)
                                                 Navigator.of(context).push(_createRoute(Home()));

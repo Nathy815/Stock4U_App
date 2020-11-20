@@ -31,7 +31,7 @@ class NotasService {
           title: item['title'].toString(),
           comments: item['comments'] != null ? item['comments'].toString() : null,
           attach: item['attach'] != null ? item['attach'].toString() : null,
-          alert: item['alert']
+          alert: item['alert'] == null ? null : DateTime.parse(item['alert'].toString())
         ));
     }
 
@@ -53,7 +53,7 @@ class NotasService {
         title: _response['title'].toString(),
         comments: _response['comments'] == null ? null : _response['comments'].toString(),
         attach: _response['attach'] == null ? null : _response['attach'].toString(),
-        alert: _response['alert']
+        alert: _response['alert'] == null ? null : DateTime.parse(_response['alert'].toString())
       );
     }
 

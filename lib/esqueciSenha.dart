@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 import 'services/usuarioService.dart';
 import 'login.dart';
 
-class EsqueciSenha extends StatelessWidget {
+class EsqueciSenha extends StatefulWidget {
+  EsqueciSenhaForm createState() => EsqueciSenhaForm();
+}
+
+class EsqueciSenhaForm extends State<EsqueciSenha> {
   String email;
+  bool loading = false;
   final GlobalKey<FormState> esqueci = GlobalKey<FormState>();
 
   @override
@@ -79,7 +84,10 @@ class EsqueciSenha extends StatelessWidget {
                       ),
                     ),
                     child: FlatButton(
-                      child: Text(
+                      child: 
+                      loading ?
+                      CircularProgressIndicator() :
+                      Text(
                         "Enviar",
                         style: TextStyle(
                           color: Colors.white
@@ -88,11 +96,29 @@ class EsqueciSenha extends StatelessWidget {
                       onPressed: () async {
                         if (esqueci.currentState.validate())
                         {
+                          setState(() { loading = true; });
                           esqueci.currentState.save();
                           await UsuarioService().resetPassword(email);
+                          setState(() { loading = false; });
 
-                          Navigator.of(context).pop();
-                          Navigator.of(context).push(_createRoute(Login()));
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Sucesso"),
+                                content: Text("E-mail enviado com sucesso! Lembre-se de verificar a caixa de spam."),
+                                actions: [
+                                  FlatButton(
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).push(_createRoute(Login()));
+                                    }
+                                  )
+                                ],
+                              );
+                            }
+                          );
                         }
                       }
                     )

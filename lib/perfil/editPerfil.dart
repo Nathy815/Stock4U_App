@@ -13,18 +13,20 @@ class EditPerfil extends StatefulWidget {
 }
 
 class EditPerfilForm extends State<EditPerfil> {
-  String id, sexo, cep, endereco, numero, complemento;
+  String id, sexo, endereco;
+  bool loading = false;
   DateTime dataNascimento = DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
   var ptBR = initializeDateFormatting('pt_Br', null);
-  final dateFormat = new DateFormat('dd/MM/yyyy HH:mm');
+  final dateFormat = new DateFormat('dd/MM/yyyy');
   List<String> sexos = ["Feminino", "Masculino", "Indiferente"];
   final GlobalKey<FormState> perfil = GlobalKey<FormState>();
   TextEditingController nome = new TextEditingController();
   TextEditingController email = new TextEditingController();
-  var maskCep = new MaskTextInputFormatter(
-      mask: '#####-###', filter: {"#": RegExp(r'[0-9]')});
+  TextEditingController cepController = new TextEditingController();
+  TextEditingController numeroController = new TextEditingController();
+  TextEditingController complementoController = new TextEditingController();
+  var maskCep = new MaskTextInputFormatter(mask: '#####-###', filter: {"#": RegExp(r'[0-9]')});
   
-
   @override
   void initState() {
     super.initState();
@@ -41,15 +43,18 @@ class EditPerfilForm extends State<EditPerfil> {
         nome.text = model.name;
         email.text = model.email;
         if (model.birthDate != null) dataNascimento = model.birthDate;
-        if (model.gender != null) sexo = sexos.elementAt(sexos.indexOf(model.gender));
+        var _genderIndex = sexos.indexOf(model.gender);
+        if (model.gender != null && _genderIndex > -1) sexo = sexos.elementAt(_genderIndex);
         else sexo = 'Feminino';
-        print(model.address);
         if (model.address != null) {
           endereco = model.address;
-          cep = model.address.split('CEP: ')[1].split(' - ')[0];
+          print(model.address.split('CEP: ')[1].split(' - ')[0]);
+          cepController.text = model.address.split('CEP: ')[1].split(' - ')[0];
         }
-        if (model.number != null) numero = model.number;
-        if (model.compliment != null) complemento = model.compliment;
+        print(model.number);
+        print(model.compliment);
+        if (model.number != null) numeroController.text = model.number;
+        if (model.compliment != null) complementoController.text = model.compliment;
       });
     }
   }
@@ -210,7 +215,7 @@ class EditPerfilForm extends State<EditPerfil> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Endereco",
+                        "CEP",
                         style: TextStyle(
                           color: Color.fromRGBO(215, 0, 0, 1),
                           fontWeight: FontWeight.w500
@@ -218,7 +223,8 @@ class EditPerfilForm extends State<EditPerfil> {
                       ),
                     ),
                     TextFormField(
-                      onSaved: (value) => cep = value,
+                      controller: cepController,
+                      onSaved: (value) => cepController.text = value,
                       maxLength: 9,
                       inputFormatters: [maskCep],
                       onChanged: (value) async {
@@ -240,27 +246,60 @@ class EditPerfilForm extends State<EditPerfil> {
                       keyboardType: TextInputType.number,
                       validator: (value)  => value.isEmpty || value.trim().length == 0 ? 'Campo obrigatório' : null
                     ),
-                    Text(endereco == null ? "Nenhum endereço adicionado" : endereco),
+                    Padding(
+                      padding: EdgeInsets.only(top: 30, bottom: 30),
+                      child: Text(endereco == null ? "Nenhum endereço adicionado" : endereco),
+                    ),
                     Row(
                       children: [
                         Expanded(
                           flex: 1,
-                          child: TextFormField(
-                            onSaved: (value) => numero = value,
-                            maxLength: 6,
-                            keyboardType: TextInputType.text,
-                            validator: (value) => value.isEmpty || value.trim().length == 0 ? "Campo obrigatório. Coloque 's/n' caso não possua" : null,
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Número",
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(215, 0, 0, 1),
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                              ),
+                              TextFormField(
+                                controller: numeroController,
+                                onSaved: (value) => numeroController.text = value,
+                                maxLength: 6,
+                                keyboardType: TextInputType.text,
+                                validator: (value) => value.isEmpty || value.trim().length == 0 ? "Campo obrigatório. Coloque 's/n' caso não possua" : null,
+                              )
+                            ]
                           )
                         ),
                         Expanded(
                           flex: 3,
                           child: Padding(
                             padding: EdgeInsets.only(left: 20),
-                            child: TextFormField(
-                              onSaved: (value) => complemento = value,
-                              maxLength: 30,
-                              keyboardType: TextInputType.text,
-                              validator: (value) => value.isEmpty || value.trim().length == 0 ? "Campo obrigatório" : null,
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Complemento",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(215, 0, 0, 1),
+                                      fontWeight: FontWeight.w500
+                                    ),
+                                  ),
+                                ),
+                                TextFormField(
+                                  controller: complementoController,
+                                  onSaved: (value) => complementoController.text = value,
+                                  maxLength: 30,
+                                  keyboardType: TextInputType.text,
+                                  validator: (value) => value.isEmpty || value.trim().length == 0 ? "Campo obrigatório" : null,
+                                )
+                              ]
                             )
                           )
                         )
@@ -279,7 +318,10 @@ class EditPerfilForm extends State<EditPerfil> {
                           ),
                         ),
                         child: FlatButton(
-                          child: Text(
+                          child: 
+                          loading ?
+                          CircularProgressIndicator() :
+                          Text(
                             "Salvar",
                             style: TextStyle(
                               color: Colors.white
@@ -289,15 +331,16 @@ class EditPerfilForm extends State<EditPerfil> {
                             if (perfil.currentState.validate())
                             {
                               perfil.currentState.save();
-                              
+                              setState(() { loading = true; });
                               var _mensagem = await UsuarioService().update(new UsuarioModel(
                                 id: id,
                                 birthDate: dataNascimento,
                                 gender: sexo,
                                 address: endereco,
-                                number: numero,
-                                compliment: complemento
+                                number: numeroController.text,
+                                compliment: complementoController.text
                               ));
+                              setState(() { loading = false; });
 
                               if (_mensagem == null) {
                                 showDialog(

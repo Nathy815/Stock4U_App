@@ -223,7 +223,14 @@ class PerfilForm extends State<Perfil> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(500),
-                            child: Image.network(
+                            child: snapshot.data.image == null ?
+                            Center(
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 150,
+                                    color: Color.fromRGBO(215, 0, 0, 1)
+                                  )
+                                ) : Image.network(
                               snapshot.data.image,
                               errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
                                 return Center(

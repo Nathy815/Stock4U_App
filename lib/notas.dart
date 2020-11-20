@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'services/notasService.dart';
-import 'nota.dart';
+import 'nota/nota.dart';
 
 class Notas extends StatefulWidget {
   String equityID;
@@ -11,6 +13,8 @@ class Notas extends StatefulWidget {
 }
 
 class NotasForm extends State<Notas> {
+  var ptBR = initializeDateFormatting('pt_Br', null);
+  final dateFormat = new DateFormat('dd/MM/yyyy HH:mm');
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +48,13 @@ class NotasForm extends State<Notas> {
                   var item = snapshot.data[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID, notaID: item.id)));
+                      print('alert: ' + item.alert.toString());
+                      /*Navigator.of(context).pop();
+                      Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID, notaID: item.id)));*/
                     },
-                    child: Card(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: snapshot.data.length - 1 == index ? 10 : 0),
+                      child: Card(
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border(
@@ -57,22 +64,133 @@ class NotasForm extends State<Notas> {
                             )
                           )
                         ),
-                        child: ListTile(
+                        child: ExpansionTile(
+                          leading: item.alert == null ? 
+                            Icon(Icons.alarm_off) :
+                            Icon(Icons.alarm_on),
                           title: Text(item.title),
-                          subtitle: Text(
-                            item.comments,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: item.alert == null ? Text("") : Center(
-                            child: Icon(
-                              Icons.alarm,
-                              color: Colors.red,
+                          trailing: Icon(Icons.arrow_drop_down),
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Comentário",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Color.fromRGBO(215, 0, 0, 1),
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                )
+                              )
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  item.comments,
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(15, 15, 15, 1)
+                                  )
+                                )
+                              )
+                            ),
+                            Visibility(
+                              visible: item.attach != null,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Anexo",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color.fromRGBO(215, 0, 0, 1),
+                                      fontWeight: FontWeight.w500
+                                    ),
+                                  )
+                                )
+                              )
+                            ),
+                            Visibility(
+                              visible: item.attach != null,
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Tem anexo",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(15, 15, 15, 1)
+                                    )
+                                  )
+                                )
+                              )
+                            ),
+                            Visibility(
+                              visible: item.alert != null,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Alerta",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color.fromRGBO(215, 0, 0, 1),
+                                      fontWeight: FontWeight.w500
+                                    ),
+                                  )
+                                )
+                              )
+                            ),
+                            Visibility(
+                              visible: item.alert != null,
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    item.alert != null ? dateFormat.format(item.alert) : "-",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(15, 15, 15, 1)
+                                    )
+                                  )
+                                )
+                              )
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 30),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 52,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [Color.fromRGBO(215, 0, 0, 1), Color.fromRGBO(215, 0, 0, 0.8)],
+                                    begin: FractionalOffset.centerLeft,
+                                    end: FractionalOffset.centerRight,
+                                  ),
+                                ),
+                                child: FlatButton(
+                                  onPressed: () {
+                                    //Navigator.of(context).pop();
+                                    Navigator.of(context).push(_createRoute(Nota(notaID: item.id, equityID: widget.equityID,)));
+                                  },
+                                  child: Text(
+                                    "Editar",
+                                    style: TextStyle(
+                                      color: Colors.white
+                                    )
+                                  ),
+                                )
+                              )
                             )
-                          ),
+                          ],
                         )
                       )
-                    )
+                    ))
                   );
                 }
               );

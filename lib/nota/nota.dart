@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:stock_app/models/notaModel.dart';
-import 'services/notasService.dart';
-import 'notas.dart';
+import '../services/notasService.dart';
+import '../notas.dart';
 
 class Nota extends StatefulWidget {
   String equityID, notaID;
@@ -19,11 +19,37 @@ class NotaForm extends State<Nota> {
   final GlobalKey<FormState> nota = GlobalKey<FormState>();
   var ptBR = initializeDateFormatting('pt_Br', null);
   final dateFormat = new DateFormat('dd/MM/yyyy HH:mm');
-  String titulo, comentario;
+  TextEditingController titulo = new TextEditingController();
+  TextEditingController comentario = new TextEditingController();
   File anexo;
   DateTime alerta = DateTime.now();
   bool alertar = false;
+  bool loading = false;
   
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) { 
+      getData();
+    });
+  }
+
+  getData() async {
+    var _model = await NotasService().get(widget.notaID);
+    if (_model != null) {
+      titulo.text = _model.title;
+      comentario.text = _model.comments;
+      setState(() {
+        if (_model.alert != null)
+        {
+          alertar = true;
+          alerta = _model.alert;
+        }
+        //if (_model.attach != null) 
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +83,8 @@ class NotaForm extends State<Nota> {
                       ),
                     ),
                     TextFormField(
-                      onSaved: (value) => titulo = value,
+                      controller: titulo,
+                      onSaved: (value) => titulo.text = value,
                       maxLength: 100,
                       keyboardType: TextInputType.text,
                       validator: (value)  => value.isEmpty || value.trim().length == 0 ? 'Campo obrigatório' : null
@@ -70,10 +97,11 @@ class NotaForm extends State<Nota> {
                       ),
                     ),
                     TextFormField(
-                      onSaved: (value) => comentario = value,
+                      controller: comentario,
+                      onSaved: (value) => comentario.text = value,
                       maxLength: 256,
                       maxLines: 10,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.multiline,
                       validator: (value)  => value.isEmpty || value.trim().length == 0 ? 'Campo obrigatório' : null
                     ),
                     ListTile(
@@ -130,7 +158,7 @@ class NotaForm extends State<Nota> {
                         alignment: Alignment.centerRight,
                         child: InkWell(
                           onTap: () {
-                            DatePicker.showDatePicker(
+                            DatePicker.showDateTimePicker(
                               context,
                               showTitleActions: true,
                               minTime: DateTime.now(),
@@ -167,7 +195,10 @@ class NotaForm extends State<Nota> {
                           ),
                         ),
                         child: FlatButton(
-                          child: Text(
+                          child: 
+                          loading ?
+                          CircularProgressIndicator() :
+                          Text(
                             "Salvar",
                             style: TextStyle(
                               color: Colors.white
@@ -177,15 +208,19 @@ class NotaForm extends State<Nota> {
                             if (nota.currentState.validate())
                             {
                               nota.currentState.save();
+                              setState(() { loading = true; });
+                              var _alert = alertar ? alerta : null;
+                              print(_alert.toString());
                               var _mensagem = await NotasService().create(
                                 new NotaModel(
-                                  title: titulo, 
-                                  comments: comentario,
+                                  title: titulo.text, 
+                                  comments: comentario.text,
                                   attachFile: anexo,
-                                  alert: alertar ? alerta : null
+                                  alert: _alert
                                 ),
                                 widget.equityID
                               );
+                              setState(() { loading = true; });
 
                               if (_mensagem == null) {
                                 showDialog(
