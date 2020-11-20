@@ -34,32 +34,17 @@ class AcoesForm extends State<Acoes> {
         iconTheme: IconThemeData(
           color: Color.fromRGBO(51, 51, 51, 1)
         ),
-      ),
-      bottomNavigationBar: Visibility(visible: widget.equityID == null, child: BottomNavigationBar(
-        selectedFontSize: 0,
-        currentIndex: 1,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "",
+        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.close,
+              color: Colors.white
+            ),
+            onPressed: () => Navigator.of(context).pop()
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: ""
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: ""
-          )
         ],
-        onTap: (value) {
-          Navigator.of(context).pop();
-          if (value == 0)
-            Navigator.of(context).push(_createRoute(Home()));
-          else if (value == 2)
-            Navigator.of(context).push(_createRoute(Perfil()));
-        },
-      )),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [

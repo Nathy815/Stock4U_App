@@ -80,6 +80,7 @@ class AcaoService {
         compare: new List<AcaoModel>()
       );
 
+      print(_response['compare'].toString());
       for(var item in _response['compare'])
       {
         _model.compare.add(new AcaoModel(
@@ -159,5 +160,22 @@ class AcaoService {
       return null;
     else
       return "Falha ao adicionar ação. Tente novamente mais tarde.";
+  }
+
+  Future<bool> remove(String equityID, String compareID) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    var _result = await http.patch(_apiURL + "api/equity/remove",
+                                   body: json.encode({
+                                     "UserID": prefs.getString("userID"),
+                                     "EquityID": equityID,
+                                     "CompareID": compareID
+                                   }));
+
+    if (_result.statusCode == 200)
+      return true;
+
+    print('code: ' + _result.statusCode.toString());
+    return false;
   }
 }

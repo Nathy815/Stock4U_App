@@ -26,15 +26,24 @@ class NotasForm extends State<Notas> {
         iconTheme: IconThemeData(
           color: Colors.white
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID)));
+            },
+            icon: Icon(Icons.add),
+          )
+        ],
       ),
-      floatingActionButton: new FloatingActionButton(
+      /*floatingActionButton: new FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pop();
           Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID)));
         },
         child: Icon(Icons.add),
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
-      ),
+      ),*/
       body: FutureBuilder(
         future: NotasService().list(widget.equityID),
         builder: (context2, snapshot) {

@@ -30,6 +30,7 @@ class PerfilForm extends State<Perfil> {
         title: Center(
           child: Text("")
         ),
+        automaticallyImplyLeading: false,
         actions: [
           PopupMenuButton<String>(
             onSelected: (opcao) async {
@@ -96,15 +97,11 @@ class PerfilForm extends State<Perfil> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 0,
-        currentIndex: 2,
+        currentIndex: 1,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: ""
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -112,11 +109,11 @@ class PerfilForm extends State<Perfil> {
           )
         ],
         onTap: (value) {
-          Navigator.of(context).pop();
           if (value == 0)
+          {
+            Navigator.of(context).pop();
             Navigator.of(context).push(_createRoute(Home()));
-          else if (value == 1)
-            Navigator.of(context).push(_createRoute(Acoes()));
+          }
         },
       ),
       body: FutureBuilder(

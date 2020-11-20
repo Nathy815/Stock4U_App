@@ -15,12 +15,25 @@ class HomeForm extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text("Minhas Ações"),
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
         elevation: 0,
         iconTheme: IconThemeData(
           color: Color.fromRGBO(51, 51, 51, 1)
         ),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white
+            ),
+            onPressed: () {
+              //Navigator.of(context).pop();
+              Navigator.of(context).push(_createRoute(Acoes()));
+            },
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 0,
@@ -30,20 +43,16 @@ class HomeForm extends State<Home> {
             label: "",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: ""
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: ""
           )
         ],
         onTap: (value) {
-          Navigator.of(context).pop();
           if (value == 1)
-            Navigator.of(context).push(_createRoute(Acoes()));
-          else if (value == 2)
+          {
+            Navigator.of(context).pop();
             Navigator.of(context).push(_createRoute(Perfil()));
+          }
         },
       ),
       body: FutureBuilder(
@@ -81,8 +90,9 @@ class HomeForm extends State<Home> {
                                       actions: [
                                         FlatButton(
                                           onPressed: () {
+                                            //Navigator.of(context).pop(context);
                                             Navigator.of(context3).pop();
-                                            if (_result) Navigator.of(context).push(_createRoute(Home()));
+                                            if (_result) setState(() {});//Navigator.of(context).push(_createRoute(Home()));
                                           }, 
                                           child: Text("OK")
                                         )
@@ -93,7 +103,7 @@ class HomeForm extends State<Home> {
                               },
                             ),
                             FlatButton(
-                              onPressed: null, 
+                              onPressed: () => Navigator.of(context2).pop(), 
                               child: Text(
                                 "Cancelar", 
                                 style: TextStyle(
