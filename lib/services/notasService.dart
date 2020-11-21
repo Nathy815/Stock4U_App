@@ -25,6 +25,7 @@ class NotasService {
     if (_result.statusCode == 200)
     {
       var _response = json.decode(_result.body);
+      print(_result.body.toString());
       for (var item in _response)
         _lista.add(new NotaModel(
           id: item['id'].toString(),

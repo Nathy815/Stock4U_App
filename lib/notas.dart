@@ -4,10 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'services/notasService.dart';
 import 'nota/nota.dart';
+import 'resumo.dart';
 
 class Notas extends StatefulWidget {
-  String equityID;
-  Notas(this.equityID);
+  String equityID, ticker;
+  Notas(this.equityID, this.ticker);
 
   NotasForm createState() => NotasForm();
 }
@@ -26,11 +27,22 @@ class NotasForm extends State<Notas> {
         iconTheme: IconThemeData(
           color: Colors.white
         ),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(_createRoute(Resumo(equityID: widget.equityID, ticker: widget.ticker)));
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          )
+        ),
         actions: [
           IconButton(
             onPressed: () {
               Navigator.of(context).pop();
-              Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID)));
+              Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID, ticker: widget.ticker,)));
             },
             icon: Icon(Icons.add),
           )
@@ -57,9 +69,56 @@ class NotasForm extends State<Notas> {
                   var item = snapshot.data[index];
                   return GestureDetector(
                     onTap: () {
-                      print('alert: ' + item.alert.toString());
-                      /*Navigator.of(context).pop();
-                      Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID, notaID: item.id)));*/
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID, notaID: item.id, ticker: widget.ticker)));
+                    },
+                    onLongPress: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context2) {
+                          return AlertDialog(
+                            title: Text("Atenção!"),
+                            content: Text("Tem certeza que deseja excluir essa nota?"),
+                            actions: [
+                              FlatButton(
+                                child: Text("Sim"),
+                                onPressed: () async {
+                                  var _result = await NotasService().delete(item.id);
+                                  Navigator.of(context).pop(context2);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context3) {
+                                      return AlertDialog(
+                                        title: Text(_result ? "Sucesso" : "Erro"),
+                                        content: Text(_result ? "Nota excluída com sucesso!" : "Falha ao excluir Nota. Tente novamente mais tarde."),
+                                        actions: [
+                                          FlatButton(
+                                            onPressed: () {
+                                              //Navigator.of(context).pop(context);
+                                              Navigator.of(context3).pop();
+                                              if (_result) setState(() {});//Navigator.of(context).push(_createRoute(Home()));
+                                            }, 
+                                            child: Text("OK")
+                                          )
+                                        ],
+                                      );
+                                    }
+                                  );
+                                },
+                              ),
+                              FlatButton(
+                                onPressed: () => Navigator.of(context2).pop(), 
+                                child: Text(
+                                  "Cancelar", 
+                                  style: TextStyle(
+                                    color: Colors.black38
+                                  )
+                                )
+                              )
+                            ],
+                          );
+                        }
+                      );
                     },
                     child: Padding(
                       padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: snapshot.data.length - 1 == index ? 10 : 0),
@@ -74,6 +133,8 @@ class NotasForm extends State<Notas> {
                           )
                         ),
                         child: ExpansionTile(
+                          key: GlobalKey(),
+                          initiallyExpanded: false,
                           leading: item.alert == null ? 
                             Icon(Icons.alarm_off) :
                             Icon(Icons.alarm_on),
@@ -185,6 +246,7 @@ class NotasForm extends State<Notas> {
                                 child: FlatButton(
                                   onPressed: () {
                                     //Navigator.of(context).pop();
+                                    setState(() {});
                                     Navigator.of(context).push(_createRoute(Nota(notaID: item.id, equityID: widget.equityID,)));
                                   },
                                   child: Text(

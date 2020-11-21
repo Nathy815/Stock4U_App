@@ -9,8 +9,8 @@ import '../services/notasService.dart';
 import '../notas.dart';
 
 class Nota extends StatefulWidget {
-  String equityID, notaID;
-  Nota({this.equityID, this.notaID});
+  String equityID, notaID, ticker;
+  Nota({this.equityID, this.notaID, this.ticker});
 
   NotaForm createState() => NotaForm();
 }
@@ -35,18 +35,19 @@ class NotaForm extends State<Nota> {
   }
 
   getData() async {
-    var _model = await NotasService().get(widget.notaID);
-    if (_model != null) {
-      titulo.text = _model.title;
-      comentario.text = _model.comments;
-      setState(() {
-        if (_model.alert != null)
-        {
-          alertar = true;
-          alerta = _model.alert;
-        }
-        //if (_model.attach != null) 
-      });
+    if (widget.notaID != null) {
+      var _model = await NotasService().get(widget.notaID);
+      if (_model != null) {
+        titulo.text = _model.title;
+        comentario.text = _model.comments;
+        setState(() {
+          if (_model.alert != null)
+          {
+            alertar = true;
+            alerta = _model.alert;
+          }
+        });
+      }
     }
   }
 
@@ -211,15 +212,33 @@ class NotaForm extends State<Nota> {
                               setState(() { loading = true; });
                               var _alert = alertar ? alerta : null;
                               print(_alert.toString());
-                              var _mensagem = await NotasService().create(
-                                new NotaModel(
-                                  title: titulo.text, 
-                                  comments: comentario.text,
-                                  attachFile: anexo,
-                                  alert: _alert
-                                ),
-                                widget.equityID
-                              );
+
+                              String _mensagem = null;
+                              if (widget.notaID == null)
+                              {
+                                _mensagem = await NotasService().create(
+                                  new NotaModel(
+                                    title: titulo.text, 
+                                    comments: comentario.text,
+                                    attachFile: anexo,
+                                    alert: _alert
+                                  ),
+                                  widget.equityID
+                                );
+                              }
+                              else
+                              {
+                                _mensagem = await NotasService().update(
+                                  new NotaModel(
+                                    id: widget.notaID,
+                                    title: titulo.text, 
+                                    comments: comentario.text,
+                                    attachFile: anexo,
+                                    alert: _alert
+                                  )
+                                );
+                              }
+
                               setState(() { loading = true; });
 
                               if (_mensagem == null) {
@@ -228,7 +247,7 @@ class NotaForm extends State<Nota> {
                                   builder: (BuildContext context2) {
                                     return AlertDialog(
                                       title: Text("Sucesso"),
-                                      content: Text("Nota cadastrada com sucesso!"),
+                                      content: Text(widget.notaID == null ? "Nota cadastrada com sucesso!" : "Nota editada com sucesso!"),
                                       actions: [
                                         FlatButton(
                                           child: Text("OK"),
@@ -238,7 +257,7 @@ class NotaForm extends State<Nota> {
                                             });
                                             Navigator.of(context2).pop();
                                             Navigator.of(context).pop();
-                                            Navigator.of(context).push(_createRoute(Notas(widget.equityID)));
+                                            Navigator.of(context).push(_createRoute(Notas(widget.equityID, widget.ticker)));
                                           }
                                         )
                                       ],
@@ -289,7 +308,7 @@ class NotaForm extends State<Nota> {
                           ),
                           onPressed: () {
                             Navigator.of(context).pop();
-                            Navigator.of(context).push(_createRoute(Notas(widget.equityID)));
+                            Navigator.of(context).push(_createRoute(Notas(widget.equityID, widget.ticker)));
                           }
                         )
                       )

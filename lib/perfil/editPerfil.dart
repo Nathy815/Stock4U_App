@@ -7,6 +7,8 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../perfil.dart';
 import '../models/usuarioModel.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class EditPerfil extends StatefulWidget {
   EditPerfilForm createState() => EditPerfilForm();
@@ -14,6 +16,7 @@ class EditPerfil extends StatefulWidget {
 
 class EditPerfilForm extends State<EditPerfil> {
   String id, sexo, endereco;
+  File imagem, imagemTemp;
   bool loading = false;
   DateTime dataNascimento = DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
   var ptBR = initializeDateFormatting('pt_Br', null);
@@ -48,15 +51,26 @@ class EditPerfilForm extends State<EditPerfil> {
         else sexo = 'Feminino';
         if (model.address != null) {
           endereco = model.address;
-          print(model.address.split('CEP: ')[1].split(' - ')[0]);
           cepController.text = model.address.split('CEP: ')[1].split(' - ')[0];
         }
-        print(model.number);
-        print(model.compliment);
         if (model.number != null) numeroController.text = model.number;
         if (model.compliment != null) complementoController.text = model.compliment;
       });
     }
+  }
+
+  void getImageFromGallery() async {
+    var imagemTemp = await ImagePicker().getImage(source: ImageSource.gallery);
+    setState(() {
+      imagem = File(imagemTemp.path);
+    });
+  }
+
+  void getImageFromCamera() async {
+    var imagemTemp = await ImagePicker().getImage(source: ImageSource.camera);
+    setState(() {
+      imagem = File(imagemTemp.path);
+    });
   }
 
   @override
@@ -73,16 +87,114 @@ class EditPerfilForm extends State<EditPerfil> {
         ),
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
+          child: Card(
+            child: Padding(
               padding: EdgeInsets.all(20),
-              child: Card(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Form(
+              child: Form(
                 key: perfil,
                 child: Column(
                   children: [
+                    Align(
+                      child: Container (
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(500),
+                          border: Border.all(
+                            color: Color.fromRGBO(215, 0, 0, 1), 
+                            width: 3
+                          )
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(500),
+                          child: imagem == null ?
+                          Center(
+                            child: Text("Selecione uma imagem")
+                          ) : 
+                          OverflowBox(
+                            maxWidth: 200,
+                            maxHeight: 200,
+                            alignment: Alignment.center,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              child: Image.file(
+                                imagem,
+                                errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                  return Center(
+                                    child: Text(
+                                      "Selecione uma imagem",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(215, 0, 0, 1),
+                                        fontWeight: FontWeight.w500
+                                      )
+                                    )
+                                  );
+                                },
+                              )
+                            )
+                          ),
+                        )
+                      )
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 0, right: 40),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(215, 0, 0, 1),
+                                  borderRadius: BorderRadius.circular(500),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(215, 0, 0, 1), 
+                                    width: 3
+                                  )
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white
+                                  ),  
+                                  onPressed: () => getImageFromCamera(),
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 0, left: 40),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(215, 0, 0, 1),
+                                  borderRadius: BorderRadius.circular(500),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(215, 0, 0, 1), 
+                                    width: 3
+                                  )
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.image,
+                                    color: Colors.white
+                                  ),  
+                                  onPressed: () => getImageFromGallery(),
+                                )
+                              )
+                            )
+                          )
+                        )
+                      ],
+                    ),
                     Padding(
-                      padding: EdgeInsets.only(bottom: 30),
+                      padding: EdgeInsets.only(top: 30, bottom: 30),
                       child: Column(
                         children: [
                           Align(
@@ -416,8 +528,10 @@ class EditPerfilForm extends State<EditPerfil> {
                     )
                   ],
                 )
-              )))
+              )
             )
+          )
+        )
     );
   }
 

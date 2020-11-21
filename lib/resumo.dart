@@ -9,8 +9,9 @@ import 'home.dart';
 import 'perfil.dart';
 
 class Resumo extends StatefulWidget {
-  AcaoModel acao;
-  Resumo(this.acao);
+  String equityID, ticker;
+  Resumo({this.equityID, this.ticker});
+  
   ResumoForm createState() => ResumoForm();
 }
 
@@ -27,7 +28,7 @@ class ResumoForm extends State<Resumo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.acao.ticker),
+        title: Text(widget.ticker),
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
         elevation: 0,
         iconTheme: IconThemeData(
@@ -40,12 +41,15 @@ class ResumoForm extends State<Resumo> {
               Icons.close,
               color: Colors.white
             ),
-            onPressed: () => Navigator.of(context).pop()
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(_createRoute(Home()));
+            }
           ),
         ],
       ),
       body: FutureBuilder(
-        future: new AcaoService().get(widget.acao.id),
+        future: new AcaoService().get(widget.equityID),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -55,7 +59,7 @@ class ResumoForm extends State<Resumo> {
                   children: [
                     Expanded(
                       child: Container(
-                        color: widget.acao.higher == null ? Colors.blue.withOpacity(0.2) : widget.acao.higher == true ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2), 
+                        color: snapshot.data.higher == null ? Colors.blue.withOpacity(0.2) : snapshot.data.higher == true ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2), 
                         child: Padding(
                           padding: EdgeInsets.all(10),
                           child: Column(
@@ -65,7 +69,7 @@ class ResumoForm extends State<Resumo> {
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text(
-                                    widget.acao.value.toString(),
+                                    snapshot.data.value.toString(),
                                     style: TextStyle(
                                       fontSize: 18
                                     ),
@@ -82,10 +86,10 @@ class ResumoForm extends State<Resumo> {
                                       children: [
                                         Align(
                                           alignment: Alignment.center,
-                                          child: widget.acao.higher != null ? Icon(
-                                            widget.acao.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                          child: snapshot.data.higher != null ? Icon(
+                                            snapshot.data.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                                             size: 50,
-                                            color: widget.acao.higher == true ? Colors.green : Colors.red
+                                            color: snapshot.data.higher == true ? Colors.green : Colors.red
                                           ) : Text("")
                                         ),
                                         Padding(
@@ -93,8 +97,8 @@ class ResumoForm extends State<Resumo> {
                                           child: Align(
                                             alignment: Alignment.center,
                                             child: Text(
-                                              widget.acao.variation != null ? widget.acao.variation.toString() : "0",
-                                              style: TextStyle(color: widget.acao.higher == null ? Colors.blue : widget.acao.higher == true ? Colors.green : Colors.red),
+                                              snapshot.data.variation != null ? snapshot.data.variation.toString() : "0",
+                                              style: TextStyle(color: snapshot.data.higher == null ? Colors.blue : snapshot.data.higher == true ? Colors.green : Colors.red),
                                             )
                                           )
                                         )
@@ -105,12 +109,12 @@ class ResumoForm extends State<Resumo> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(5),
-                                          color: widget.acao.higher == null ? Colors.blue : widget.acao.higher == true ? Colors.green : Colors.red
+                                          color: snapshot.data.higher == null ? Colors.blue : snapshot.data.higher == true ? Colors.green : Colors.red
                                         ),
                                         child: Padding(
                                           padding: EdgeInsets.all(7),
                                           child: Text(
-                                            widget.acao.percentage != null ? widget.acao.percentage.toString() + "%" : "0%",
+                                            snapshot.data.percentage != null ? snapshot.data.percentage.toString() + "%" : "0%",
                                             style: TextStyle(
                                               color: Colors.white
                                             )
@@ -128,7 +132,7 @@ class ResumoForm extends State<Resumo> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => Navigator.of(context).push(_createRoute(Notas(widget.acao.id))),
+                        onTap: () => Navigator.of(context).push(_createRoute(Notas(snapshot.data.id, snapshot.data.ticker))),
                         child: Container(
                           color: Colors.red,
                           child: Padding(
@@ -238,7 +242,7 @@ class ResumoForm extends State<Resumo> {
                                   FlatButton(
                                     child: Text("Sim"),
                                     onPressed: () async {
-                                      var _result = await AcaoService().remove(widget.acao.id, item.id);
+                                      var _result = await AcaoService().remove(snapshot.data.id, item.id);
                                       Navigator.of(context).pop(context2);
                                       showDialog(
                                         context: context,

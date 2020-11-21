@@ -66,7 +66,7 @@ class HomeForm extends State<Home> {
                 return GestureDetector(
                   onTap: () {
                     //Navigator.of(context).pop();
-                    Navigator.of(context).push(_createRoute(Resumo(item)));
+                    Navigator.of(context).push(_createRoute(Resumo(equityID: item.id, ticker: item.ticker)));
                   },
                   onLongPress: () {
                     showDialog(
