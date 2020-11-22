@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'login.dart';
 import 'home.dart';
-import 'perfil.dart';
 import 'models/acaoModel.dart';
 import 'services/acaoService.dart';
+import 'resumo.dart';
 
 class Acoes extends StatefulWidget {
-  String equityID;
-  Acoes({this.equityID});
+  String equityID, ticker;
+  Acoes({this.equityID, this.ticker});
   AcoesForm createState() => AcoesForm();
 }
 
@@ -136,6 +134,8 @@ class AcoesForm extends State<Acoes> {
                                               Navigator.of(context4).pop();
                                               if (widget.equityID == null)
                                                 Navigator.of(context).push(_createRoute(Home()));
+                                              else
+                                                Navigator.of(context).push(_createRoute(Resumo(equityID: widget.equityID, ticker: widget.ticker)));
                                             }
                                           )
                                         ]

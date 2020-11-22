@@ -26,7 +26,7 @@ dependencies:
   animated_splash_screen: ^1.0.1+2
   intl:
   http:
-  dio:
+  dio: ^3.0.10
   shared_preferences: ^0.5.12+4
   flutter_datetime_picker: ^1.4.0
   fl_animated_linechart: ^1.1.4

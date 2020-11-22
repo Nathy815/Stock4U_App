@@ -28,8 +28,7 @@ class HomeForm extends State<Home> {
               Icons.add,
               color: Colors.white
             ),
-            onPressed: () {
-              //Navigator.of(context).pop();
+            onPressed: () async {
               Navigator.of(context).push(_createRoute(Acoes()));
             },
           )

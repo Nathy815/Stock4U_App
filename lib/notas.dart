@@ -31,6 +31,7 @@ class NotasForm extends State<Notas> {
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
+            print('ticker notas back: ' + widget.ticker);
             Navigator.of(context).push(_createRoute(Resumo(equityID: widget.equityID, ticker: widget.ticker)));
           },
           icon: Icon(

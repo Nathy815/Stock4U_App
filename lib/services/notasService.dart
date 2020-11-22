@@ -88,7 +88,12 @@ class NotasService {
     });
 
     var _result = await new Dio().post(_apiURL + "api/note/create",
-                                       data: _data);
+                                       data: _data,
+                                       options: Options(
+                                         headers: {
+                                           'Authorization': 'Bearer ' + prefs.getString("userToken")
+                                         }
+                                       ));
 
     if (_result.statusCode == 200)
       return null;
@@ -105,8 +110,15 @@ class NotasService {
       "Alert": model.alert
     });
 
+    var prefs = await SharedPreferences.getInstance();
+
     var _result = await new Dio().patch(_apiURL + "api/note/update",
-                                        data: _data);
+                                        data: _data,
+                                        options: Options(
+                                          headers: {
+                                            'Authorization': 'Bearer ' + prefs.getString("userToken")
+                                          }
+                                        ));
 
     if (_result.statusCode == 200)
       return null;

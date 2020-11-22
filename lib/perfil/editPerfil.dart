@@ -61,16 +61,18 @@ class EditPerfilForm extends State<EditPerfil> {
 
   void getImageFromGallery() async {
     var imagemTemp = await ImagePicker().getImage(source: ImageSource.gallery);
-    setState(() {
-      imagem = File(imagemTemp.path);
-    });
+    if (imagemTemp != null && imagemTemp.path != null)
+      setState(() {
+        imagem = File(imagemTemp.path);
+      });
   }
 
   void getImageFromCamera() async {
     var imagemTemp = await ImagePicker().getImage(source: ImageSource.camera);
-    setState(() {
-      imagem = File(imagemTemp.path);
-    });
+    if (imagemTemp != null && imagemTemp.path != null)
+      setState(() {
+        imagem = File(imagemTemp.path);
+      });
   }
 
   @override
@@ -82,9 +84,17 @@ class EditPerfilForm extends State<EditPerfil> {
         iconTheme: IconThemeData(
           color: Colors.white
         ),
-        title: Center(
-          child: Text("Edição de Perfil")
-        ),
+        automaticallyImplyLeading: false,
+        title: Text("Edição de Perfil"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(_createRoute(Perfil()));
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
@@ -111,7 +121,13 @@ class EditPerfilForm extends State<EditPerfil> {
                           borderRadius: BorderRadius.circular(500),
                           child: imagem == null ?
                           Center(
-                            child: Text("Selecione uma imagem")
+                            child: Text(
+                              "Selecione uma imagem",
+                              style: TextStyle(
+                                color: Color.fromRGBO(215, 0, 0, 1),
+                                fontWeight: FontWeight.w500
+                              )
+                            )
                           ) : 
                           OverflowBox(
                             maxWidth: 200,
@@ -444,14 +460,18 @@ class EditPerfilForm extends State<EditPerfil> {
                             {
                               perfil.currentState.save();
                               setState(() { loading = true; });
+                              if (imagem == null) print('imagem nula');
+                              else print(imagem.toString());
                               var _mensagem = await UsuarioService().update(new UsuarioModel(
                                 id: id,
                                 birthDate: dataNascimento,
                                 gender: sexo,
                                 address: endereco,
                                 number: numeroController.text,
+                                imageFile: imagem,
                                 compliment: complementoController.text
                               ));
+                              
                               setState(() { loading = false; });
 
                               if (_mensagem == null) {

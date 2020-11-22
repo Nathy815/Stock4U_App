@@ -61,6 +61,7 @@ class NotaForm extends State<Nota> {
         iconTheme: IconThemeData(
           color: Colors.white
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: EdgeInsets.all(30),
@@ -257,6 +258,7 @@ class NotaForm extends State<Nota> {
                                             });
                                             Navigator.of(context2).pop();
                                             Navigator.of(context).pop();
+                                            print('ticker nota: ' + widget.ticker);
                                             Navigator.of(context).push(_createRoute(Notas(widget.equityID, widget.ticker)));
                                           }
                                         )

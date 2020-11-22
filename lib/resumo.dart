@@ -28,7 +28,7 @@ class ResumoForm extends State<Resumo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.ticker),
+        title: Text(widget.ticker == null ? "" : widget.ticker),
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
         elevation: 0,
         iconTheme: IconThemeData(
@@ -188,7 +188,7 @@ class ResumoForm extends State<Resumo> {
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(_createRoute(Acoes(equityID: snapshot.data.id)));
+                          Navigator.of(context).push(_createRoute(Acoes(equityID: snapshot.data.id, ticker: snapshot.data.ticker)));
                         },
                         child: Container(
                           decoration: BoxDecoration(

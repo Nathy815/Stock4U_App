@@ -25,6 +25,7 @@ class LoginForm extends State<Login> {
         iconTheme: IconThemeData(
           color: Color.fromRGBO(51, 51, 51, 1)
         ),
+        automaticallyImplyLeading: false,
       ),
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
@@ -151,7 +152,7 @@ class LoginForm extends State<Login> {
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).push(_createRoute(EsqueciSenha()));
+                              Navigator.of(context).push(_createRoute(EsqueciSenha(), '/esqueciSenha'));
                             },
                             child: Text(
                               "Esqueceu sua senha?",
@@ -329,7 +330,7 @@ class LoginForm extends State<Login> {
 
                                 if (_mensagem == null) {
                                   Navigator.of(context).pop();
-                                  Navigator.of(context).push(_createRoute(Home()));
+                                  Navigator.of(context).push(_createRoute(Home(), '/home'));
                                 }
                                 else {
                                   showDialog(
@@ -364,12 +365,15 @@ class LoginForm extends State<Login> {
     );
   }
 
-  Route _createRoute(Widget page) {
+  Route _createRoute(Widget page, String name) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return child;
       },
+      settings: RouteSettings(
+        name: name
+      )
     );
   }
 } 

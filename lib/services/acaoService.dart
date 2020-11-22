@@ -43,9 +43,11 @@ class AcaoService {
 
   Future<bool> delete(String equityID) async {
     var prefs = await SharedPreferences.getInstance();
-    print('equity: ' + equityID);
-    print('user: ' + prefs.getString("userID"));
-    var _result = await http.delete(_apiURL + "api/equity/delete/" + equityID + "/" + prefs.getString("userID"));
+    
+    var _result = await http.delete(_apiURL + "api/equity/delete/" + equityID + "/" + prefs.getString("userID"),
+                                    headers: {
+                                      'Authorization': 'Bearer ' + prefs.getString("userToken")
+                                    });
 
     if (_result.statusCode == 200)
       return true;
@@ -164,18 +166,19 @@ class AcaoService {
 
   Future<bool> remove(String equityID, String compareID) async {
     var prefs = await SharedPreferences.getInstance();
-
+    var _body = json.encode({"UserID": prefs.getString("userID"), "EquityID": equityID, "CompareID": compareID});
+    
     var _result = await http.patch(_apiURL + "api/equity/remove",
-                                   body: json.encode({
-                                     "UserID": prefs.getString("userID"),
-                                     "EquityID": equityID,
-                                     "CompareID": compareID
-                                   }));
+                                   body: _body,
+                                   headers: {
+                                     'Content-Type': 'application/json',
+                                     'Authorization': 'Bearer ' + prefs.getString("userToken")
+                                   });
 
     if (_result.statusCode == 200)
       return true;
 
-    print('code: ' + _result.statusCode.toString());
+    print('remove code: ' + _result.statusCode.toString());
     return false;
   }
 }

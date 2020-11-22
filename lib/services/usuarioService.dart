@@ -68,20 +68,18 @@ class UsuarioService {
             'https://graph.facebook.com/v2.12/me?fields=name,email,picture&access_token=' + token);
         Map<String, dynamic> profile = json.decode(graphResponse.body);
 
+        final credentials = FacebookAuthProvider.credential(token);
+        await _auth.signInWithCredential(credentials);
+        if (_auth.currentUser != null)
+        {
+          await salvarInformacao('userToken', await _auth.currentUser.getIdToken());
+          await salvarInformacao('userImage', _auth.currentUser.photoURL + "?height=800&access_token=" + token);
+        }
+
         var _result = await create(profile['name'].toString(), profile['email'].toString());
 
         if (_result == 200)
-        {
-          final credentials = FacebookAuthProvider.credential(token);
-          await _auth.signInWithCredential(credentials);
-          if (_auth.currentUser != null)
-          {
-            await salvarInformacao('userToken', await _auth.currentUser.getIdToken());
-            await salvarInformacao('userImage', _auth.currentUser.photoURL + "?height=800&access_token=" + token);
-          }
-
           return null;
-        }
         else {
           if (await _facebookLogin.isLoggedIn) _facebookLogin.logOut();
           if (_auth.currentUser != null) _auth.currentUser.delete();
@@ -103,21 +101,19 @@ class UsuarioService {
 
   Future<String> loginWithGoogle() async {
     return await _googleSignIn.signIn().then((googleUser) async {
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      await _auth.signInWithCredential(credential);
+      if (_auth.currentUser != null) {
+        await salvarInformacao('userToken', await _auth.currentUser.getIdToken());
+        await salvarInformacao('userImage', _googleSignIn.currentUser.photoUrl.replaceAll('s96-c', 's1000-c'));
+      }  
+
       var _result = await create(googleUser.displayName, googleUser.email);
       
       if (_result == 200)
-      {
-        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-        await _auth.signInWithCredential(credential);
-        if (_auth.currentUser != null) {
-          await salvarInformacao('userToken', await _auth.currentUser.getIdToken());
-          await salvarInformacao('userImage', _googleSignIn.currentUser.photoUrl.replaceAll('s96-c', 's1000-c'));
-        }
-        
         return null;
-      }
       else {
         _googleSignIn.signOut();
         if (_auth.currentUser != null)
@@ -134,10 +130,12 @@ class UsuarioService {
 
   Future<int> create(String nome, String email) async {
     var _body = json.encode({"Name": nome,"Email": email,"Role": "Client"});
-    
+    var _prefs = await SharedPreferences.getInstance();
+
     var _result = await http.post(_apiURL + "api/user/create",
                                   headers: {
-                                    'Content-Type': 'application/json'
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + _prefs.getString('userToken')
                                   },
                                   body: _body);
 
@@ -315,15 +313,22 @@ class UsuarioService {
       var _data = new FormData.fromMap({
         "id": model.id,
         "birthDate": model.birthDate,
-        "image": model.imageFile,
+        "image": model.imageFile == null ? null : await MultipartFile.fromFile(model.imageFile.path),
         "gender": model.gender,
         "address": model.address,
         "number": model.number,
         "compliment": model.compliment
       });
       
+      var prefs = await SharedPreferences.getInstance();
+
       var _result = await new Dio().patch(_apiURL + "api/user/update",
-                                          data: _data);
+                                          data: _data,
+                                          options: Options(
+                                            headers: {
+                                              'Authorization': 'Bearer ' + prefs.getString("userToken")
+                                            }
+                                          ));
 
       if (_result.statusCode == 200)
         return null;

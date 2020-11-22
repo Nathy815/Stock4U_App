@@ -21,6 +21,7 @@ class EsqueciSenhaForm extends State<EsqueciSenha> {
         iconTheme: IconThemeData(
           color: Color.fromRGBO(51, 51, 51, 1)
         ),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Center(

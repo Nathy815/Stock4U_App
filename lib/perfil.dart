@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'components/stock4_u_icons.dart' as CustomIcons;
 import 'login.dart';
 import 'home.dart';
-import 'acoes.dart';
 import 'services/usuarioService.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -222,22 +221,31 @@ class PerfilForm extends State<Perfil> {
                             borderRadius: BorderRadius.circular(500),
                             child: snapshot.data.image == null ?
                             Center(
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 150,
-                                    color: Color.fromRGBO(215, 0, 0, 1)
-                                  )
-                                ) : Image.network(
-                              snapshot.data.image,
-                              errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                                return Center(
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 150,
-                                    color: Color.fromRGBO(215, 0, 0, 1)
-                                  )
-                                );
-                              },
+                              child: Icon(
+                                Icons.person,
+                                size: 150,
+                                color: Color.fromRGBO(215, 0, 0, 1)
+                              )
+                            ) : OverflowBox(
+                              maxWidth: 200,
+                              maxHeight: 200,
+                              alignment: Alignment.center,
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                alignment: Alignment.center,
+                                child: Image.network(
+                                  snapshot.data.image,
+                                  errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                    return Center(
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 150,
+                                        color: Color.fromRGBO(215, 0, 0, 1)
+                                      )
+                                    );
+                                  },
+                                )
+                              )
                             )
                           )
                         )
