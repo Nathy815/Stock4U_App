@@ -31,6 +31,8 @@ class UsuarioService {
         if (_auth.currentUser != null) await _auth.signOut();
         if (_result == 400)
           return "E-mail e/ou senha inválido(s).";
+
+        print('login: ' + _result.toString());
         return "Falha ao logar usuário. Tente novamente mais tarde.";
       }
     }

@@ -32,6 +32,7 @@ dependencies:
   fl_animated_linechart: ^1.1.4
   mask_text_input_formatter:
   image_picker: ^0.6.7+14
+  signalr_client: ^0.1.6
 
   # Firebase
   firebase_core:

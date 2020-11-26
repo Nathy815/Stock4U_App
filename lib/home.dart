@@ -4,13 +4,47 @@ import 'services/acaoService.dart';
 import 'resumo.dart';
 import 'perfil.dart';
 import 'acoes.dart';
+import 'package:signalr_client/signalr_client.dart';
+import 'models/acaoModel.dart';
+import 'dart:convert';
 
 class Home extends StatefulWidget {
   HomeForm createState() => HomeForm();
 }
 
 class HomeForm extends State<Home> {
-  
+  final hubConnection = HubConnectionBuilder().withUrl("http://ec2-52-67-44-12.sa-east-1.compute.amazonaws.com/stock_api/api/equityHub").build();
+  List<AcaoModel> _lista = new List<AcaoModel>();
+  bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) { 
+      getData();
+      //hubConfig();
+    });
+  }
+
+  hubConfig() async {
+    hubConnection.onclose((error) { print('Conexão perdida'); });
+    hubConnection.on("ListEquities", ReceiveMessage);
+    await hubConnection.start();
+  }
+
+  getData() async {
+    setState(() { loading = true; });
+    var result = await AcaoService().list();
+    setState(() {
+      _lista.addAll(result);
+      loading = false;
+    });
+  }
+
+  void ReceiveMessage(List<Object> result) {
+    print('received: ' + json.encode(result));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,14 +88,19 @@ class HomeForm extends State<Home> {
           }
         },
       ),
-      body: FutureBuilder(
+      body: /*FutureBuilder(
         future: new AcaoService().list(),
         builder: (context, snapshot) {
           if (snapshot.hasData)
-            return ListView.builder(
-              itemCount: snapshot.data.length,
+            return*/
+            loading ? 
+            Center(child: CircularProgressIndicator())
+            : _lista.length == 0 ?
+            Center(child: Text("Não há ações para listar"))
+            : ListView.builder(
+              itemCount: _lista.length,
               itemBuilder: (context, index) {
-                var item = snapshot.data[index];
+                var item = _lista[index];
                 return GestureDetector(
                   onTap: () {
                     //Navigator.of(context).pop();
@@ -124,7 +163,7 @@ class HomeForm extends State<Home> {
                         color: Colors.white,
                         border: Border(
                           bottom: BorderSide(
-                            width: index != snapshot.data.length ? 0.5 : 0,
+                            width: index != _lista.length ? 0.5 : 0,
                             color: Colors.black12
                           )
                         ),
@@ -247,12 +286,12 @@ class HomeForm extends State<Home> {
                     )
                   ))
                 );
-              },
+              /*},
             );
           else if (snapshot.hasError)
             return Center(child: Text("Você ainda não possui ações."));
           else
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());*/
         }
       )
     );

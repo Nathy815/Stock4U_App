@@ -6,7 +6,6 @@ import 'components/grafico.dart';
 import 'notas.dart';
 import 'acoes.dart';
 import 'home.dart';
-import 'perfil.dart';
 
 class Resumo extends StatefulWidget {
   String equityID, ticker;
@@ -16,12 +15,33 @@ class Resumo extends StatefulWidget {
 }
 
 class ResumoForm extends State<Resumo> {
-  List<AcaoModel> acoes;
+  AcaoModel acao = new AcaoModel();
+  List<AcaoModel> acoes = new List<AcaoModel>();
+  List<String> filters = ["day", "week", "month", "threeMonths", "sixMonths", "year", "fiveYears"];
+  int filter = 0;
+  bool loading = true;
 
   @override
   void initState() {
     super.initState();
-    acoes = new List<AcaoModel>();
+    WidgetsBinding.instance.addPostFrameCallback((_) { 
+      getData();
+    });
+  }
+
+  getData() async {
+    var _result = await AcaoService().get(widget.equityID);
+    
+    if (_result != null)
+      setState(() {
+        acao = _result;
+        if (acao.compare != null && acao.compare.length > 0)
+        {
+          acoes.clear();
+          acoes.addAll(acao.compare);
+        }
+      });
+    setState(() { loading = false; });
   }
 
   @override
@@ -48,57 +68,55 @@ class ResumoForm extends State<Resumo> {
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: new AcaoService().get(widget.equityID),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                Grafico(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: snapshot.data.higher == null ? Colors.blue.withOpacity(0.2) : snapshot.data.higher == true ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2), 
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 5),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    snapshot.data.value.toString(),
-                                    style: TextStyle(
-                                      fontSize: 18
-                                    ),
-                                  )
-                                ),
+      body: loading ?
+        Center(child: CircularProgressIndicator()) :
+        Column(
+          children: [
+            Grafico(widget.equityID),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  color: acao.higher == null ? Colors.blue.withOpacity(0.2) : acao.higher == true ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2), 
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              acao.value.toString(),
+                              style: TextStyle(
+                                fontSize: 18
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Row(
+                            )
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: snapshot.data.higher != null ? Icon(
-                                            snapshot.data.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                                            size: 50,
-                                            color: snapshot.data.higher == true ? Colors.green : Colors.red
-                                          ) : Text("")
-                                        ),
-                                        Padding(
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: acao.higher != null ? Icon(
+                                        acao.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                        size: 50,
+                                        color: acao.higher == true ? Colors.green : Colors.red
+                                      ) : Text("")
+                                    ),
+                                    Padding(
                                           padding: EdgeInsets.only(right: 10),
                                           child: Align(
                                             alignment: Alignment.center,
                                             child: Text(
-                                              snapshot.data.variation != null ? snapshot.data.variation.toString() : "0",
-                                              style: TextStyle(color: snapshot.data.higher == null ? Colors.blue : snapshot.data.higher == true ? Colors.green : Colors.red),
+                                              acao.variation != null ? acao.variation.toString() : "0",
+                                              style: TextStyle(color: acao.higher == null ? Colors.blue : acao.higher == true ? Colors.green : Colors.red),
                                             )
                                           )
                                         )
@@ -109,12 +127,12 @@ class ResumoForm extends State<Resumo> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(5),
-                                          color: snapshot.data.higher == null ? Colors.blue : snapshot.data.higher == true ? Colors.green : Colors.red
+                                          color: acao.higher == null ? Colors.blue : acao.higher == true ? Colors.green : Colors.red
                                         ),
                                         child: Padding(
                                           padding: EdgeInsets.all(7),
                                           child: Text(
-                                            snapshot.data.percentage != null ? snapshot.data.percentage.toString() + "%" : "0%",
+                                            acao.percentage != null ? acao.percentage.toString() + "%" : "0%",
                                             style: TextStyle(
                                               color: Colors.white
                                             )
@@ -132,7 +150,7 @@ class ResumoForm extends State<Resumo> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => Navigator.of(context).push(_createRoute(Notas(snapshot.data.id, snapshot.data.ticker))),
+                        onTap: () => Navigator.of(context).push(_createRoute(Notas(acao.id, acao.ticker))),
                         child: Container(
                           color: Colors.red,
                           child: Padding(
@@ -146,7 +164,7 @@ class ResumoForm extends State<Resumo> {
                                       child: Column(
                                         children: [
                                           Text(
-                                            snapshot.data.notes == null ? "0" : snapshot.data.notes.toString(),
+                                            acao.notes == null ? "0" : acao.notes.toString(),
                                             style: TextStyle(
                                               fontSize: 30,
                                               fontWeight: FontWeight.w500,
@@ -181,14 +199,14 @@ class ResumoForm extends State<Resumo> {
                   ]
                 ),
                 Visibility(
-                  visible: snapshot.data.compare == null || snapshot.data.compare.length < 3,
+                  visible: acao.compare == null || acao.compare.length < 3,
                   child: Padding(
                     padding: EdgeInsets.all(20),
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(_createRoute(Acoes(equityID: snapshot.data.id, ticker: snapshot.data.ticker)));
+                          Navigator.of(context).push(_createRoute(Acoes(equityID: acao.id, ticker: acao.ticker)));
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -224,12 +242,12 @@ class ResumoForm extends State<Resumo> {
                   )
                 ),
                 Expanded(
-                  child: snapshot.data.compare == null || snapshot.data.compare.length == 0 ?
+                  child: acoes == null || acoes.length == 0 ?
                   Center(child: Text("Não há ações para comparar")) :
                   ListView.builder(
-                    itemCount: snapshot.data.compare.length,
+                    itemCount: acoes.length,
                     itemBuilder: (context, index) {
-                      var item = snapshot.data.compare[index];
+                      var item = acoes[index];
                       return GestureDetector(
                         onLongPress: () {
                           showDialog(
@@ -242,7 +260,7 @@ class ResumoForm extends State<Resumo> {
                                   FlatButton(
                                     child: Text("Sim"),
                                     onPressed: () async {
-                                      var _result = await AcaoService().remove(snapshot.data.id, item.id);
+                                      var _result = await AcaoService().remove(acao.id, item.id);
                                       Navigator.of(context).pop(context2);
                                       showDialog(
                                         context: context,
@@ -252,9 +270,12 @@ class ResumoForm extends State<Resumo> {
                                             content: Text(_result ? "Ação removida com sucesso!" : "Falha ao remover ação. Tente novamente mais tarde."),
                                             actions: [
                                               FlatButton(
-                                                onPressed: () {
+                                                onPressed: () async {
                                                   Navigator.of(context3).pop();
-                                                  if (_result) setState(() {});
+                                                  if (_result) {//setState(() {});
+                                                    Navigator.of(context).pop();
+                                                    Navigator.of(context3).push(_createRoute(Resumo(equityID: widget.equityID, ticker: widget.ticker)));
+                                                  }
                                                 }, 
                                                 child: Text("OK")
                                               )
@@ -279,7 +300,7 @@ class ResumoForm extends State<Resumo> {
                           );
                         },
                         child: Padding(
-                          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: snapshot.data.compare.length - 1 == index ? 10 : 0),
+                          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: acoes.length - 1 == index ? 10 : 0),
                           child: Card(
                             child: Container(
                               decoration: BoxDecoration(
@@ -400,14 +421,14 @@ class ResumoForm extends State<Resumo> {
                   ),
                 )
               ]
-            );
-          }
+            )
+          /*}
           else if (snapshot.hasError)
             return Center(child: Text("Não foi possível carregar os dados dessa ação."));
           else
-            return Center(child: CircularProgressIndicator());
+            return Padding(padding: EdgeInsets.only(top: 30, bottom: 30), child: Center(child: CircularProgressIndicator()));
         }
-      ),
+      ),*/
     );
   }
 

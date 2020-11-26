@@ -2,15 +2,15 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/acaoModel.dart';
-import '../models/acaoDetalheModel.dart';
 import 'dart:convert';
 
 class AcaoService {
 
   final _auth = FirebaseAuth.instance;
   final String _apiURL = 'http://ec2-52-67-44-12.sa-east-1.compute.amazonaws.com/stock_api/';
-
+  
   Future<List<AcaoModel>> list() async {
+    
     var prefs = await SharedPreferences.getInstance();
     var _userID = prefs.getString("userID");
     
@@ -82,21 +82,22 @@ class AcaoService {
         compare: new List<AcaoModel>()
       );
 
-      print(_response['compare'].toString());
-      for(var item in _response['compare'])
-      {
-        _model.compare.add(new AcaoModel(
-          id: item['id'].toString(),
-          ticker: item['ticker'].toString(),
-          name: item['name'].toString(),
-          value: item['value'],
-          variation: item['variation'],
-          percentage: item['percentage'],
-          higher: item['higher']
-        ));
+      if (_response['compare'] != null) {
+        for(var item in _response['compare'])
+        {
+          _model.compare.add(new AcaoModel(
+            id: item['id'].toString(),
+            ticker: item['ticker'].toString(),
+            name: item['name'].toString(),
+            value: item['value'],
+            variation: item['variation'],
+            percentage: item['percentage'],
+            higher: item['higher']
+          ));
+        }
       }
 
-      print('passou');
+      print('passou get');
 
       return _model;
     }
@@ -104,6 +105,34 @@ class AcaoService {
     print('code: ' + _result.statusCode.toString());
      
     return new AcaoModel();
+  }
+
+  Future<List<Map<DateTime, double>>> getChart(String equityID, String filter) async {
+    var prefs = await SharedPreferences.getInstance();
+    var _body = json.encode({ "UserID": prefs.getString("userID"), "EquityID": equityID, "Filter": filter });
+    
+    var _result = await http.post(_apiURL + "api/equity/chart",
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + prefs.getString('userToken')
+                                  },
+                                  body: _body);
+
+    var _lista = new List<Map<DateTime, double>>();
+    if (_result.statusCode == 200)
+    {
+      var _response = json.decode(_result.body);
+      for(var item in _response)
+      {
+        var _map = new Map<DateTime, double>();
+        for(var point in item)
+          _map[DateTime.parse(point['legend'].toString())] = point['point'];
+        _lista.add(_map);
+      }
+    }
+    
+    print('chart: ' + _result.statusCode.toString());
+    return _lista;
   }
 
   Future<List<AcaoModel>> search(String termo) async {

@@ -7,6 +7,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:stock_app/models/notaModel.dart';
 import '../services/notasService.dart';
 import '../notas.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Nota extends StatefulWidget {
   String equityID, notaID, ticker;
@@ -21,7 +22,7 @@ class NotaForm extends State<Nota> {
   final dateFormat = new DateFormat('dd/MM/yyyy HH:mm');
   TextEditingController titulo = new TextEditingController();
   TextEditingController comentario = new TextEditingController();
-  File anexo;
+  File anexo, imagem, imagemTemp;
   DateTime alerta = DateTime.now();
   bool alertar = false;
   bool loading = false;
@@ -49,6 +50,18 @@ class NotaForm extends State<Nota> {
         });
       }
     }
+  }
+
+  void getImageFromGallery() async {
+    var imagemTemp = await ImagePicker().getImage(source: ImageSource.gallery);
+    if (imagemTemp != null && imagemTemp.path != null)
+      setState(() {
+        imagem = File(imagemTemp.path);
+      });
+  }
+
+  void getFile() async {
+    print('upload file');
   }
 
   @override
@@ -108,14 +121,23 @@ class NotaForm extends State<Nota> {
                     ),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      trailing: IconButton(
-                        onPressed: () {
-                          print("upload");
-                        },
-                        icon: Icon(
-                          Icons.attach_file,
-                          color: anexo == null ? Colors.black38 : Color.fromRGBO(215, 0, 0, 1),
-                        )
+                      trailing: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => getFile(),
+                            icon: Icon(
+                              Icons.attach_file,
+                              color: anexo == null ? Colors.black38 : Color.fromRGBO(215, 0, 0, 1),
+                            )
+                          ),
+                          IconButton(
+                            onPressed: () => getImageFromGallery(),
+                            icon: Icon(
+                              Icons.image,
+                              color: imagem == null ? Colors.black38 : Color.fromRGBO(215, 0, 0, 1)
+                            )
+                          )
+                        ]
                       ),
                       title: Text(
                         "Anexar",
@@ -126,7 +148,7 @@ class NotaForm extends State<Nota> {
                         ),
                       ),
                       subtitle: Text(
-                        anexo == null ? "Nenhum arquivo anexado" : anexo.path,
+                        anexo == null && imagem == null ? "Nenhum arquivo anexado" : anexo != null ? anexo.path : imagem.path,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 10
@@ -258,7 +280,6 @@ class NotaForm extends State<Nota> {
                                             });
                                             Navigator.of(context2).pop();
                                             Navigator.of(context).pop();
-                                            print('ticker nota: ' + widget.ticker);
                                             Navigator.of(context).push(_createRoute(Notas(widget.equityID, widget.ticker)));
                                           }
                                         )
