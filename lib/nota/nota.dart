@@ -119,7 +119,26 @@ class NotaForm extends State<Nota> {
                       keyboardType: TextInputType.multiline,
                       validator: (value)  => value.isEmpty || value.trim().length == 0 ? 'Campo obrigatório' : null
                     ),
-                    ListTile(
+                    Row(
+                      children: [
+                        Text(
+                          "Anexo",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color.fromRGBO(215, 0, 0, 1),
+                            fontWeight: FontWeight.w500
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => getImageFromGallery(),
+                          icon: Icon(
+                            Icons.image,
+                            color: imagem == null ? Colors.black38 : Color.fromRGBO(215, 0, 0, 1)
+                          )
+                        )
+                      ],
+                    ),
+                    /*ListTile(
                       contentPadding: EdgeInsets.zero,
                       trailing: Row(
                         children: [
@@ -154,7 +173,7 @@ class NotaForm extends State<Nota> {
                           fontSize: 10
                         ),
                       ),
-                    ),
+                    ),*/
                     Row(
                       children: [
                         Text(
