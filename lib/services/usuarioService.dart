@@ -1,5 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -10,7 +9,7 @@ import 'package:dio/dio.dart';
 import '../models/usuarioModel.dart';
 
 class UsuarioService {
-
+  final FirebaseMessaging _msg = new FirebaseMessaging();
   final _auth = FirebaseAuth.instance;
   final FacebookLogin _facebookLogin = new FacebookLogin();
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
@@ -131,7 +130,7 @@ class UsuarioService {
   }
 
   Future<int> create(String nome, String email) async {
-    var _body = json.encode({"Name": nome,"Email": email,"Role": "Client"});
+    var _body = json.encode({"Name": nome,"Email": email,"Role": "Client", "PushToken": await _msg.getToken()});
     var _prefs = await SharedPreferences.getInstance();
 
     var _result = await http.post(_apiURL + "api/user/create",
@@ -150,7 +149,7 @@ class UsuarioService {
   }
 
   Future<int> findByEmail(String email) async {
-    var _body = json.encode({"Email": email});
+    var _body = json.encode({"Email": email, "PushToken": await _msg.getToken()});
     
     var _result = await http.post(_apiURL + "api/user/findByEmail",
                                   headers: {

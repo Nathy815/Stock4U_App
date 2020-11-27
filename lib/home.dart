@@ -6,7 +6,6 @@ import 'perfil.dart';
 import 'acoes.dart';
 import 'package:signalr_client/signalr_client.dart';
 import 'models/acaoModel.dart';
-import 'dart:convert';
 
 class Home extends StatefulWidget {
   HomeForm createState() => HomeForm();
@@ -26,12 +25,6 @@ class HomeForm extends State<Home> {
     });
   }
 
-  hubConfig() async {
-    hubConnection.onclose((error) { print('Conexão perdida'); });
-    hubConnection.on("ListEquities", ReceiveMessage);
-    await hubConnection.start();
-  }
-
   getData() async {
     setState(() { loading = true; });
     var result = await AcaoService().list();
@@ -39,10 +32,6 @@ class HomeForm extends State<Home> {
       _lista.addAll(result);
       loading = false;
     });
-  }
-
-  void ReceiveMessage(List<Object> result) {
-    print('received: ' + json.encode(result));
   }
 
   @override
