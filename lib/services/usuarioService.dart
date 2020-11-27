@@ -131,12 +131,10 @@ class UsuarioService {
 
   Future<int> create(String nome, String email) async {
     var _body = json.encode({"Name": nome,"Email": email,"Role": "Client", "PushToken": await _msg.getToken()});
-    var _prefs = await SharedPreferences.getInstance();
 
     var _result = await http.post(_apiURL + "api/user/create",
                                   headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer ' + _prefs.getString('userToken')
+                                    'Content-Type': 'application/json'
                                   },
                                   body: _body);
 
@@ -181,6 +179,7 @@ class UsuarioService {
         return "Falha ao cadastrar usuário. Tente novamente mais tarde. (Erro r0002)";
       }
     } catch(e) {
+      await _auth.currentUser.delete();
       if (e.toString().contains("weak-password"))
         return "A senha deve ter, no mínimo 6 caracteres.";
       else if (e.toString().contains(("email-already-in-use")))
