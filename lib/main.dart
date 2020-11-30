@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         key: _scaffoldKey,
+        resizeToAvoidBottomPadding: false,
         body: MessageHandler()
       )
     );

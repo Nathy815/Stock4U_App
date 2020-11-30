@@ -15,8 +15,7 @@ class NotasService {
     
     var _result = await http.post(_apiURL + "api/note/list",
                                   headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer ' + prefs.getString("userToken")
+                                    'Content-Type': 'application/json'
                                   },
                                   body: _body
                                   );
@@ -25,7 +24,7 @@ class NotasService {
     if (_result.statusCode == 200)
     {
       var _response = json.decode(_result.body);
-      print(_result.body.toString());
+      
       for (var item in _response)
         _lista.add(new NotaModel(
           id: item['id'].toString(),
@@ -40,12 +39,7 @@ class NotasService {
   }
 
   Future<NotaModel> get(String id) async {
-    var prefs = await SharedPreferences.getInstance();
-    
-    var _result = await http.get(_apiURL + "api/note/" + id,
-                                 headers: {
-                                   'Authorization': 'Bearer ' + prefs.getString("userToken")
-                                 });
+    var _result = await http.get(_apiURL + "api/note/" + id);
 
     if (_result.statusCode == 200) {
       var _response = json.decode(_result.body);
@@ -62,12 +56,7 @@ class NotasService {
   }
 
   Future<bool> delete(String id) async {
-    var prefs = await SharedPreferences.getInstance();
-
-    var _result = await http.delete(_apiURL + "api/note/delete/" + id,
-                                    headers: {
-                                      'Authorization': 'Bearer ' + prefs.getString("userToken")
-                                    });
+    var _result = await http.delete(_apiURL + "api/note/delete/" + id);
 
     if (_result.statusCode == 200)
       return true;
@@ -77,7 +66,7 @@ class NotasService {
 
   Future<String> create(NotaModel model, String equityID) async {
     var prefs = await SharedPreferences.getInstance();
-
+    if (model.attachFile != null) print('nota com anexo');
     var _data = new FormData.fromMap({
       "Title": model.title,
       "Comments": model.comments,
@@ -87,18 +76,22 @@ class NotasService {
       "UserID": prefs.getString("userID")
     });
 
-    var _result = await new Dio().post(_apiURL + "api/note/create",
-                                       data: _data,
-                                       options: Options(
-                                         headers: {
-                                           'Authorization': 'Bearer ' + prefs.getString("userToken")
-                                         }
-                                       ));
+    try
+    {
+      var _result = await new Dio().post(_apiURL + "api/note/create",
+                                        data: _data,
+                                        options: Options(
+                                          contentType: 'multipart/form-data'
+                                        ));
 
-    if (_result.statusCode == 200)
-      return null;
-    else 
-      return "Falha ao cadastrar nota. Tente novamente mais tarde.";
+      if (_result.statusCode == 200)
+        return null;
+      else 
+        return "Falha ao cadastrar nota. Tente novamente mais tarde. (Erro n0001)";
+    }
+    catch(e) {
+      return "Falha ao cadastrar nota. Tente novamente mais tarde. (Erro n0001)";
+    }
   }
 
   Future<String> update(NotaModel model) async {
@@ -110,15 +103,8 @@ class NotasService {
       "Alert": model.alert
     });
 
-    var prefs = await SharedPreferences.getInstance();
-
     var _result = await new Dio().patch(_apiURL + "api/note/update",
-                                        data: _data,
-                                        options: Options(
-                                          headers: {
-                                            'Authorization': 'Bearer ' + prefs.getString("userToken")
-                                          }
-                                        ));
+                                        data: _data);
 
     if (_result.statusCode == 200)
       return null;

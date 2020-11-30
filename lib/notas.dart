@@ -14,12 +14,14 @@ class Notas extends StatefulWidget {
 }
 
 class NotasForm extends State<Notas> {
+  final GlobalKey<ScaffoldState> notaKey = new GlobalKey<ScaffoldState>();
   var ptBR = initializeDateFormatting('pt_Br', null);
   final dateFormat = new DateFormat('dd/MM/yyyy HH:mm');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: notaKey,
       appBar: AppBar(
         title: Text("Notas"),
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
@@ -49,14 +51,6 @@ class NotasForm extends State<Notas> {
           )
         ],
       ),
-      /*floatingActionButton: new FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-          Navigator.of(context).push(_createRoute(Nota(equityID: widget.equityID)));
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Color.fromRGBO(215, 0, 0, 1),
-      ),*/
       body: FutureBuilder(
         future: NotasService().list(widget.equityID),
         builder: (context2, snapshot) {
@@ -75,8 +69,8 @@ class NotasForm extends State<Notas> {
                     },
                     onLongPress: () {
                       showDialog(
-                        context: context,
-                        builder: (BuildContext context2) {
+                        context: notaKey.currentContext,
+                        builder: (BuildContext notaDialog1) {
                           return AlertDialog(
                             title: Text("Atenção!"),
                             content: Text("Tem certeza que deseja excluir essa nota?"),
@@ -85,19 +79,18 @@ class NotasForm extends State<Notas> {
                                 child: Text("Sim"),
                                 onPressed: () async {
                                   var _result = await NotasService().delete(item.id);
-                                  Navigator.of(context).pop(context2);
+                                  Navigator.of(notaDialog1).pop();
                                   showDialog(
-                                    context: context,
-                                    builder: (BuildContext context3) {
+                                    context: notaKey.currentContext,
+                                    builder: (BuildContext notaDialog2) {
                                       return AlertDialog(
                                         title: Text(_result ? "Sucesso" : "Erro"),
                                         content: Text(_result ? "Nota excluída com sucesso!" : "Falha ao excluir Nota. Tente novamente mais tarde."),
                                         actions: [
                                           FlatButton(
                                             onPressed: () {
-                                              //Navigator.of(context).pop(context);
-                                              Navigator.of(context3).pop();
-                                              if (_result) setState(() {});//Navigator.of(context).push(_createRoute(Home()));
+                                              Navigator.of(notaDialog2).pop();
+                                              if (_result) Navigator.of(notaKey.currentContext).push(_createRoute(Notas(widget.equityID, widget.ticker)));
                                             }, 
                                             child: Text("OK")
                                           )
@@ -108,7 +101,7 @@ class NotasForm extends State<Notas> {
                                 },
                               ),
                               FlatButton(
-                                onPressed: () => Navigator.of(context2).pop(), 
+                                onPressed: () => Navigator.of(notaDialog1).pop(), 
                                 child: Text(
                                   "Cancelar", 
                                   style: TextStyle(

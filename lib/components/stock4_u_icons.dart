@@ -6,5 +6,6 @@ class Stock4U {
   static const _kFontFam = 'Stock4U';
   static const _kFontPkg = null;
 
+  static const IconData newspaper = IconData(0xf1ea, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData transgender = IconData(0xf224, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

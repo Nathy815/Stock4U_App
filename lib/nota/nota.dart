@@ -22,7 +22,7 @@ class NotaForm extends State<Nota> {
   final dateFormat = new DateFormat('dd/MM/yyyy HH:mm');
   TextEditingController titulo = new TextEditingController();
   TextEditingController comentario = new TextEditingController();
-  File anexo, imagem, imagemTemp;
+  File imagem, imagemTemp;
   DateTime alerta = DateTime.now();
   bool alertar = false;
   bool loading = false;
@@ -58,10 +58,6 @@ class NotaForm extends State<Nota> {
       setState(() {
         imagem = File(imagemTemp.path);
       });
-  }
-
-  void getFile() async {
-    print('upload file');
   }
 
   @override
@@ -138,42 +134,6 @@ class NotaForm extends State<Nota> {
                         )
                       ],
                     ),
-                    /*ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      trailing: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () => getFile(),
-                            icon: Icon(
-                              Icons.attach_file,
-                              color: anexo == null ? Colors.black38 : Color.fromRGBO(215, 0, 0, 1),
-                            )
-                          ),
-                          IconButton(
-                            onPressed: () => getImageFromGallery(),
-                            icon: Icon(
-                              Icons.image,
-                              color: imagem == null ? Colors.black38 : Color.fromRGBO(215, 0, 0, 1)
-                            )
-                          )
-                        ]
-                      ),
-                      title: Text(
-                        "Anexar",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color.fromRGBO(215, 0, 0, 1),
-                          fontWeight: FontWeight.w500
-                        ),
-                      ),
-                      subtitle: Text(
-                        anexo == null && imagem == null ? "Nenhum arquivo anexado" : anexo != null ? anexo.path : imagem.path,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 10
-                        ),
-                      ),
-                    ),*/
                     Row(
                       children: [
                         Text(
@@ -253,7 +213,7 @@ class NotaForm extends State<Nota> {
                               nota.currentState.save();
                               setState(() { loading = true; });
                               var _alert = alertar ? alerta : null;
-                              print(_alert.toString());
+                              print('alerta: ' + _alert.toString());
 
                               String _mensagem = null;
                               if (widget.notaID == null)
@@ -262,7 +222,7 @@ class NotaForm extends State<Nota> {
                                   new NotaModel(
                                     title: titulo.text, 
                                     comments: comentario.text,
-                                    attachFile: anexo,
+                                    attachFile: imagem,
                                     alert: _alert
                                   ),
                                   widget.equityID
@@ -275,7 +235,7 @@ class NotaForm extends State<Nota> {
                                     id: widget.notaID,
                                     title: titulo.text, 
                                     comments: comentario.text,
-                                    attachFile: anexo,
+                                    attachFile: imagem,
                                     alert: _alert
                                   )
                                 );
@@ -286,7 +246,7 @@ class NotaForm extends State<Nota> {
                               if (_mensagem == null) {
                                 showDialog(
                                   context: context,
-                                  builder: (BuildContext context2) {
+                                  builder: (BuildContext notaDialog1) {
                                     return AlertDialog(
                                       title: Text("Sucesso"),
                                       content: Text(widget.notaID == null ? "Nota cadastrada com sucesso!" : "Nota editada com sucesso!"),
@@ -297,8 +257,7 @@ class NotaForm extends State<Nota> {
                                             setState(() {
                                               nota.currentState.reset();
                                             });
-                                            Navigator.of(context2).pop();
-                                            Navigator.of(context).pop();
+                                            Navigator.of(notaDialog1).pop();
                                             Navigator.of(context).push(_createRoute(Notas(widget.equityID, widget.ticker)));
                                           }
                                         )
@@ -310,14 +269,14 @@ class NotaForm extends State<Nota> {
                               else {
                                 showDialog(
                                   context: context,
-                                  builder: (BuildContext context2) {
+                                  builder: (BuildContext notaDialog2) {
                                     return AlertDialog(
                                       title: Text("Erro"),
                                       content: Text(_mensagem),
                                       actions: [
                                         FlatButton(
                                           child: Text("OK"),
-                                          onPressed: () => Navigator.of(context2).pop()
+                                          onPressed: () => Navigator.of(notaDialog2).pop()
                                         )
                                       ],
                                     );

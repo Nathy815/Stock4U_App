@@ -2,7 +2,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_animated_linechart/fl_animated_linechart.dart';
-import 'fakeData.dart';
 import '../services/acaoService.dart';
 
 class Grafico extends StatefulWidget {

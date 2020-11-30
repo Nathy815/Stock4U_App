@@ -234,7 +234,7 @@ class UsuarioService {
       }
       else
       {
-        throw new Exception();
+        return null;
       }
   }
 

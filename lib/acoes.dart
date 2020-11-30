@@ -13,6 +13,7 @@ class Acoes extends StatefulWidget {
 
 class AcoesForm extends State<Acoes> {
   List<AcaoModel> acoes;
+  final GlobalKey<ScaffoldState> acoesKey = new GlobalKey<ScaffoldState>();
   bool loading;
 
   @override
@@ -25,6 +26,7 @@ class AcoesForm extends State<Acoes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: acoesKey,
       appBar: AppBar(
         title: Text("Ações"),
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
@@ -104,8 +106,8 @@ class AcoesForm extends State<Acoes> {
                     subtitle: Text(item.name),
                     onTap: () {
                       showDialog(
-                        context: context,
-                        builder: (BuildContext context3) {
+                        context: acoesKey.currentContext,
+                        builder: (BuildContext dialogAcoes1) {
                           return AlertDialog(
                             title: Text("Atenção!"),
                             content: Text("Tem certeza que deseja adicionar essa ação à sua lista?"),
@@ -120,10 +122,10 @@ class AcoesForm extends State<Acoes> {
                                   else
                                     _result = await AcaoService().addCompare(item.ticker, item.name, widget.equityID);
                                   setState(() { loading = false; });
-                                  Navigator.of(context3).pop();
+                                  Navigator.of(dialogAcoes1).pop();
                                   showDialog(
-                                    context: context,
-                                    builder: (BuildContext context4) {
+                                    context: acoesKey.currentContext,
+                                    builder: (BuildContext dialogAcoes2) {
                                       return AlertDialog(
                                         title: Text(_result == null ? "Sucesso" : "Erro"),
                                         content: Text(_result == null ? "Ação adicionada com sucesso!" : _result),
@@ -131,11 +133,11 @@ class AcoesForm extends State<Acoes> {
                                           FlatButton(
                                             child: Text("OK"),
                                             onPressed: () {
-                                              Navigator.of(context4).pop();
+                                              Navigator.of(dialogAcoes2).pop();
                                               if (widget.equityID == null)
-                                                Navigator.of(context).push(_createRoute(Home()));
+                                                Navigator.of(acoesKey.currentContext).push(_createRoute(Home()));
                                               else
-                                                Navigator.of(context).push(_createRoute(Resumo(equityID: widget.equityID, ticker: widget.ticker)));
+                                                Navigator.of(acoesKey.currentContext).push(_createRoute(Resumo(equityID: widget.equityID, ticker: widget.ticker)));
                                             }
                                           )
                                         ]
@@ -151,7 +153,7 @@ class AcoesForm extends State<Acoes> {
                                     color: Colors.black38
                                   )
                                 ),
-                                onPressed: () => Navigator.of(context).pop()
+                                onPressed: () => Navigator.of(dialogAcoes1).pop()
                               )
                             ],
                           );

@@ -7,6 +7,7 @@ import 'services/usuarioService.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'perfil/editPerfil.dart';
+import 'noticias.dart';
 
 class Perfil extends StatefulWidget {
   PerfilForm createState() => PerfilForm();
@@ -96,10 +97,14 @@ class PerfilForm extends State<Perfil> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 0,
-        currentIndex: 1,
+        currentIndex: 2,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
+            label: "",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CustomIcons.Stock4U.newspaper),
             label: "",
           ),
           BottomNavigationBarItem(
@@ -112,6 +117,11 @@ class PerfilForm extends State<Perfil> {
           {
             Navigator.of(context).pop();
             Navigator.of(context).push(_createRoute(Home()));
+          }
+          else if (value == 1)
+          {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(_createRoute(Noticias()));
           }
         },
       ),

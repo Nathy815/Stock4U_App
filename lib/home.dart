@@ -5,7 +5,9 @@ import 'resumo.dart';
 import 'perfil.dart';
 import 'acoes.dart';
 import 'package:signalr_client/signalr_client.dart';
+import 'components/stock4_u_icons.dart' as CustomIcons;
 import 'models/acaoModel.dart';
+import 'noticias.dart';
 
 class Home extends StatefulWidget {
   HomeForm createState() => HomeForm();
@@ -13,7 +15,8 @@ class Home extends StatefulWidget {
 
 class HomeForm extends State<Home> {
   final hubConnection = HubConnectionBuilder().withUrl("http://ec2-52-67-44-12.sa-east-1.compute.amazonaws.com/stock_api/api/equityHub").build();
-  List<AcaoModel> _lista = new List<AcaoModel>();
+  List<AcaoCompareModel> _lista = new List<AcaoCompareModel>();
+  final GlobalKey<ScaffoldState> home = new GlobalKey<ScaffoldState>();
   bool loading = false;
 
   @override
@@ -37,6 +40,8 @@ class HomeForm extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: home,
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Minhas Ações"),
         backgroundColor: Color.fromRGBO(215, 0, 0, 1),
@@ -65,6 +70,10 @@ class HomeForm extends State<Home> {
             label: "",
           ),
           BottomNavigationBarItem(
+            icon: Icon(CustomIcons.Stock4U.newspaper),
+            label: ""
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: ""
           )
@@ -73,214 +82,198 @@ class HomeForm extends State<Home> {
           if (value == 1)
           {
             Navigator.of(context).pop();
+            Navigator.of(context).push(_createRoute(Noticias()));
+          }
+          else if (value == 2)
+          {
+            Navigator.of(context).pop();
             Navigator.of(context).push(_createRoute(Perfil()));
           }
         },
       ),
-      body: /*FutureBuilder(
-        future: new AcaoService().list(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData)
-            return*/
-            loading ? 
-            Center(child: CircularProgressIndicator())
-            : _lista.length == 0 ?
-            Center(child: Text("Não há ações para listar"))
-            : ListView.builder(
-              itemCount: _lista.length,
-              itemBuilder: (context, index) {
-                var item = _lista[index];
-                return GestureDetector(
-                  onTap: () {
-                    //Navigator.of(context).pop();
-                    Navigator.of(context).push(_createRoute(Resumo(equityID: item.id, ticker: item.ticker)));
-                  },
-                  onLongPress: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context2) {
-                        return AlertDialog(
-                          title: Text("Atenção!"),
-                          content: Text("Tem certeza que deseja excluir essa ação da sua lista?"),
-                          actions: [
-                            FlatButton(
-                              child: Text("Sim"),
-                              onPressed: () async {
-                                var _result = await AcaoService().delete(item.id);
-                                Navigator.of(context).pop(context2);
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context3) {
-                                    return AlertDialog(
-                                      title: Text(_result ? "Sucesso" : "Erro"),
-                                      content: Text(_result ? "Ação excluída com sucesso!" : "Falha ao excluir ação. Tente novamente mais tarde."),
-                                      actions: [
-                                        FlatButton(
-                                          onPressed: () {
-                                            //Navigator.of(context).pop(context);
-                                            Navigator.of(context3).pop();
-                                            if (_result) setState(() {});//Navigator.of(context).push(_createRoute(Home()));
-                                          }, 
-                                          child: Text("OK")
-                                        )
-                                      ],
-                                    );
-                                  }
-                                );
-                              },
-                            ),
-                            FlatButton(
-                              onPressed: () => Navigator.of(context2).pop(), 
-                              child: Text(
-                                "Cancelar", 
-                                style: TextStyle(
-                                  color: Colors.black38
+      body: loading ? 
+        Center(child: CircularProgressIndicator())
+        : _lista.length == 0 ?
+        Center(child: Text("Não há ações para listar"))
+        : ListView.builder(
+          itemCount: _lista.length,
+          itemBuilder: (context, index) {
+          var item = _lista[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(_createRoute(Resumo(equityID: item.id, ticker: item.ticker)));
+            },
+            onLongPress: () {
+              showDialog(
+                context: home.currentContext,
+                builder: (BuildContext dialogHome1) {
+                  return AlertDialog(
+                    title: Text("Atenção!"),
+                    content: Text("Tem certeza que deseja excluir essa ação da sua lista?"),
+                    actions: [
+                      FlatButton(
+                        child: Text("Sim"),
+                        onPressed: () async {
+                          var _result = await AcaoService().delete(item.id);
+                          Navigator.of(dialogHome1).pop();
+                          showDialog(
+                            context: home.currentContext,
+                            builder: (BuildContext dialogHome2) {
+                              return AlertDialog(
+                                title: Text(_result ? "Sucesso" : "Erro"),
+                                content: Text(_result ? "Ação excluída com sucesso!" : "Falha ao excluir ação. Tente novamente mais tarde."),
+                                actions: [
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(dialogHome2).pop();
+                                      if (_result) Navigator.of(home.currentContext).push(_createRoute(Home()));
+                                    }, 
+                                    child: Text("OK")
+                                  )
+                                ],
+                              );
+                            }
+                          );
+                        },
+                      ),
+                      FlatButton(
+                        onPressed: () => Navigator.of(dialogHome1).pop(), 
+                        child: Text(
+                          "Cancelar", 
+                          style: TextStyle(
+                            color: Colors.black38
+                          )
+                        )
+                      )
+                    ],
+                  );
+                }
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              child: Card(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    bottom: BorderSide(
+                      width: index != _lista.length ? 0.5 : 0,
+                      color: Colors.black12
+                    )
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10, left: 15, bottom: 10, right: 5),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 15),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  item.ticker.toString(),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
                                 )
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                item.name,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black38
+                                ),
                               )
                             )
-                          ],
-                        );
-                      }
-                    );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                    child: Card(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          bottom: BorderSide(
-                            width: index != _lista.length ? 0.5 : 0,
-                            color: Colors.black12
-                          )
-                        ),
+                          ]
+                        )
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 10, left: 15, bottom: 10, right: 5),
-                        child: Row(
+                      Expanded(
+                        flex: 6,
+                        child: Column(
                           children: [
-                            Expanded(
-                              flex: 4,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 15),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        item.ticker.toString(),
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      )
-                                    ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 5),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red
                                   ),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(5),
                                     child: Text(
-                                      item.name,
+                                      item.value.toString(),
                                       style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black38
+                                        color: Colors.white,
+                                        fontSize: 18
                                       ),
                                     )
                                   )
-                                ]
-                              )
+                                )
+                              ),
                             ),
-                            Expanded(
-                              flex: 6,
-                              child: Column(
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 5),
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        item.value.toString(),
-                                        style: TextStyle(
-                                          fontSize: 18
-                                        ),
-                                      )
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.centerRight,
-                                              child: item.higher != null ? Icon(
-                                                item.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                                                size: 50,
-                                                color: item.higher == true ? Colors.green : Colors.red
-                                              ) : Text("")
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(right: 10),
-                                              child: Align(
-                                                alignment: Alignment.centerRight,
-                                                child: Text(
-                                                  item.variation != null ? item.variation.toString() : "0",
-                                                  style: TextStyle(color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red),
-                                                )
-                                              )
-                                            )
-                                          ]
-                                        ),
-                                        Align(
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: item.higher != null ? Icon(
+                                          item.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                          size: 50,
+                                          color: item.higher == true ? Colors.green : Colors.red
+                                        ) : Text("")
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 10),
+                                        child: Align(
                                           alignment: Alignment.centerRight,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(5),
-                                              color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(7),
-                                              child: Text(
-                                                item.percentage != null ? item.percentage.toString() + "%" : "0%",
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                )
-                                              ),
-                                            )
+                                          child: Text(
+                                            item.percentage != null ? item.percentage.toString() + "%" : "0%",
+                                            style: TextStyle(color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red),
                                           )
                                         )
-                                      ],
-                                    ),
+                                      )
+                                    ]
                                   )
                                 ],
                               ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Align(
-                                alignment: Alignment.centerRight, 
-                                child: Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 18,
-                                  color: Colors.black38
-                                ),
-                              ),
                             )
                           ],
-                        )
+                        ),
                       ),
-                    )
-                  ))
-                );
-              /*},
-            );
-          else if (snapshot.hasError)
-            return Center(child: Text("Você ainda não possui ações."));
-          else
-            return Center(child: CircularProgressIndicator());*/
+                      Expanded(
+                        flex: 1,
+                        child: Align(
+                          alignment: Alignment.centerRight, 
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 18,
+                            color: Colors.black38
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                ),
+              )
+            ))
+          );
         }
       )
     );
