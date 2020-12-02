@@ -35,6 +35,8 @@ dependencies:
   signalr_client: ^0.1.6
   flushbar: ^1.10.4
   webview_flutter: ^1.0.7
+  carousel_slider: ^2.3.1
+  getwidget: ^1.2.4
 
   # Firebase
   firebase_core:

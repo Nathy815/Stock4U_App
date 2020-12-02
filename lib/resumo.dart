@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'services/acaoService.dart';
 import 'models/acaoModel.dart';
 import 'components/grafico.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:getwidget/getwidget.dart';
 import 'notas.dart';
 import 'acoes.dart';
 import 'home.dart';
@@ -20,6 +22,7 @@ class ResumoForm extends State<Resumo> {
   AcaoModel acao = new AcaoModel();
   List<AcaoCompareModel> acoes = new List<AcaoCompareModel>();
   List<AcaoItemModel> itens = new List<AcaoItemModel>();
+  List<int> _list = [0,1];
   bool loading = true;
 
   @override
@@ -52,6 +55,8 @@ class ResumoForm extends State<Resumo> {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
       key: resumoKey,
       appBar: AppBar(
@@ -79,8 +84,19 @@ class ResumoForm extends State<Resumo> {
         Center(child: CircularProgressIndicator()) :
         Column(
           children: [
-            Grafico(widget.equityID),
-            Container(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: 18, top: 10),
+                child: Text(
+                  acao.name,
+                  style: TextStyle(
+                    color: Colors.grey
+                  )
+                )
+              )
+            ),
+            /*Container(
               width: MediaQuery.of(context).size.width,
               height: 100,
               alignment: Alignment.center,
@@ -150,7 +166,288 @@ class ResumoForm extends State<Resumo> {
                   );
                 }
               )
+            ),*/
+            Padding(
+              padding: EdgeInsets.only(top: 15, bottom: 15),
+              child: GFCarousel(
+                pagination: true,
+                activeIndicator: Color.fromRGBO(215, 0, 0, 1),
+                enlargeMainPage: true,
+                viewportFraction: 1.0,
+                height: 300,
+                items: [
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 20, bottom: 20),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: acao.itens[4].higher != null ? Icon(
+                                            acao.itens[4].higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                            size: 50,
+                                            color: acao.itens[4].higher == true ? Colors.green : Colors.red
+                                          ) : Text("")
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              acao.itens[4].value != null ? acao.itens[4].value.toString() : "-",
+                                              style: TextStyle(color: acao.itens[4].higher == null ? Colors.blue : acao.itens[4].higher == true ? Colors.green : Colors.red),
+                                            )
+                                          )
+                                        )
+                                      ]
+                                    ),
+                                    /*Padding(
+                                      padding: EdgeInsets.zero,
+                                      child: Text(
+                                        acao.itens[4].label,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey
+                                        )
+                                      )
+                                    )*/
+                                  ]
+                                )
+                              ),
+                            )
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 20, bottom: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: acao.itens[3].higher != null ? Icon(
+                                        acao.itens[3].higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                        size: 50,
+                                        color: acao.itens[3].higher == true ? Colors.green : Colors.red
+                                      ) : Text("")
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          acao.itens[3].percentage != null ? acao.itens[3].percentage.toString() + "%" : "0%",
+                                          style: TextStyle(color: acao.itens[3].higher == null ? Colors.blue : acao.itens[3].higher == true ? Colors.green : Colors.red),
+                                        )
+                                      )
+                                    )
+                                  ]
+                                )
+                              ),
+                            )
+                          )
+                        ],
+                      ),
+                      Center(
+                        child: Text(
+                          acao.itens[3].value.toString(),
+                          style: TextStyle(
+                            color: acao.itens[3].higher == null ? Colors.black54 : acao.itens[3].higher ? Colors.green : Colors.red,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w500
+                          )
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "Atual",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12
+                          )
+                        )
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 40),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          acao.itens[0].value.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 20
+                                          )
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5, bottom: 5),
+                                          child: Text(
+                                            "(" + (acao.itens[0].higher == null ? "" : acao.itens[0].higher == true ? "+ " : "- ") + acao.itens[0].percentage.toString() + "%)",
+                                            style: TextStyle(
+                                              color: acao.itens[0].higher == null ? Colors.blue : acao.itens[0].higher ? Colors.green : Colors.red,
+                                            )
+                                          )
+                                        )
+                                      ]
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: acao.itens[0].higher == null ? Colors.blue : acao.itens[0].higher ? Colors.green : Colors.red,
+                                          width: 3
+                                        )
+                                      )
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Text(
+                                      acao.itens[0].label,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey
+                                      )
+                                    )
+                                  )
+                                ],
+                              )
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          acao.itens[1].value.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 20
+                                          )
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5, bottom: 5),
+                                          child: Text(
+                                            "(" + (acao.itens[1].higher == null ? "" : acao.itens[1].higher == true ? "+ " : "- ") + acao.itens[0].percentage.toString() + "%)",
+                                            style: TextStyle(
+                                              color: acao.itens[1].higher == null ? Colors.blue : acao.itens[1].higher ? Colors.green : Colors.red,
+                                            )
+                                          )
+                                        )
+                                      ]
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: acao.itens[1].higher == null ? Colors.blue : acao.itens[1].higher ? Colors.green : Colors.red,
+                                          width: 3
+                                        )
+                                      )
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Text(
+                                      acao.itens[1].label,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey
+                                      )
+                                    )
+                                  )
+                                ],
+                              )
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          acao.itens[2].value.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 20
+                                          )
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5, bottom: 5),
+                                          child: Text(
+                                            "(" + (acao.itens[2].higher == null ? "" : acao.itens[2].higher == true ? "+ " : "- ") + acao.itens[0].percentage.toString() + "%)",
+                                            style: TextStyle(
+                                              color: acao.itens[2].higher == null ? Colors.blue : acao.itens[2].higher ? Colors.green : Colors.red,
+                                            )
+                                          )
+                                        )
+                                      ]
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: acao.itens[2].higher == null ? Colors.blue : acao.itens[2].higher ? Colors.green : Colors.red,
+                                          width: 3
+                                        )
+                                      )
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Text(
+                                      acao.itens[2].label,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey
+                                      )
+                                    )
+                                  )
+                                ],
+                              )
+                            )
+                          ],
+                        )
+                      )
+                    ],
+                  ),
+                  Grafico(widget.equityID)
+                ],
+              )
             ),
+            /*CarouselSlider.builder(
+              options: CarouselOptions(
+                height: 350,
+                enlargeCenterPage: true,
+                enableInfiniteScroll: true
+              ),
+              itemCount: 2,
+              itemBuilder: (context, index) {
+                if (index == 0)
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Text("Page 1")
+                  );
+                else 
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Grafico(widget.equityID)
+                  );
+              }
+            ),*/
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -160,7 +457,7 @@ class ResumoForm extends State<Resumo> {
                     child: Container(
                       color: Colors.red,
                       child: Padding(
-                        padding: EdgeInsets.only(top: 27, bottom: 27), 
+                        padding: EdgeInsets.only(top: 17, bottom: 17), 
                         child: Column(
                           children: [
                             Row(
@@ -204,7 +501,7 @@ class ResumoForm extends State<Resumo> {
                 ),
                 Container(
                   width: 1,
-                  height: 108,
+                  height: 88,
                   color: Color.fromRGBO(215, 0, 0, 1)
                 ),
                 Expanded(
@@ -213,7 +510,7 @@ class ResumoForm extends State<Resumo> {
                     child: Container(
                       color: Colors.red,
                       child: Padding(
-                        padding: EdgeInsets.only(top: 27, bottom: 27), 
+                        padding: EdgeInsets.only(top: 17, bottom: 17), 
                         child: Column(
                           children: [
                             Row(
@@ -262,7 +559,7 @@ class ResumoForm extends State<Resumo> {
               child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(_createRoute(Acoes(equityID: acao.id, ticker: acao.ticker)));

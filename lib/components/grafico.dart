@@ -51,14 +51,34 @@ class GraficoLine extends State<Grafico> {
           return Expanded(
             child: Column(
             children: [
+              Expanded(
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 20, left: 10, right: 15),
+                          child: AnimatedLineChart(
+                            chart,
+                            key: UniqueKey(),
+                          )
+                        )
+                      )
+                    ]
+                  ),
+                ),
+              ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.only(bottom: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(right: 10),
+                      padding: EdgeInsets.only(right: 7),
                       child: GestureDetector(
                         onTap: () => filter == 0 ? null : setState(() { filter = 0; }),
                         child: Container(
@@ -71,7 +91,7 @@ class GraficoLine extends State<Grafico> {
                             color: filter == 0 ? Color.fromRGBO(215, 0, 0, 1) : Colors.white
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(5),
                             child: Text(
                               "Hoje",
                               style: TextStyle(
@@ -83,7 +103,7 @@ class GraficoLine extends State<Grafico> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 7, right: 7),
                       child: GestureDetector(
                         onTap: () => filter == 1 ? null : setState(() { filter = 1; }),
                         child: Container(
@@ -96,7 +116,7 @@ class GraficoLine extends State<Grafico> {
                             color: filter == 1 ? Color.fromRGBO(215, 0, 0, 1) : Colors.white
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(5.5),
                             child: Text(
                               "5D",
                               style: TextStyle(
@@ -108,7 +128,7 @@ class GraficoLine extends State<Grafico> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 7, right: 7),
                       child: GestureDetector(
                         onTap: () => filter == 2 ? null : setState(() { filter = 2; }),
                         child: Container(
@@ -121,7 +141,7 @@ class GraficoLine extends State<Grafico> {
                             color: filter == 2 ? Color.fromRGBO(215, 0, 0, 1) : Colors.white
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(5.5),
                             child: Text(
                               "1M",
                               style: TextStyle(
@@ -133,7 +153,7 @@ class GraficoLine extends State<Grafico> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 7, right: 7),
                       child: GestureDetector(
                         onTap: () => filter == 3 ? null : setState(() { filter = 3; }),
                         child: Container(
@@ -146,7 +166,7 @@ class GraficoLine extends State<Grafico> {
                             color: filter == 3 ? Color.fromRGBO(215, 0, 0, 1) : Colors.white
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(5.5),
                             child: Text(
                               "3M",
                               style: TextStyle(
@@ -158,7 +178,7 @@ class GraficoLine extends State<Grafico> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 7, right: 7),
                       child: GestureDetector(
                         onTap: () => filter == 4 ? null : setState(() { filter = 4; }),
                         child: Container(
@@ -171,7 +191,7 @@ class GraficoLine extends State<Grafico> {
                             color: filter == 4 ? Color.fromRGBO(215, 0, 0, 1) : Colors.white
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(5.5),
                             child: Text(
                               "6M",
                               style: TextStyle(
@@ -183,7 +203,7 @@ class GraficoLine extends State<Grafico> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 7, right: 7),
                       child: GestureDetector(
                         onTap: () => filter == 5 ? null : setState(() { filter = 5; }),
                         child: Container(
@@ -196,7 +216,7 @@ class GraficoLine extends State<Grafico> {
                             color: filter == 5 ? Color.fromRGBO(215, 0, 0, 1) : Colors.white
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(5.5),
                             child: Text(
                               "1A",
                               style: TextStyle(
@@ -208,7 +228,7 @@ class GraficoLine extends State<Grafico> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 10),
+                      padding: EdgeInsets.only(left: 7),
                       child: GestureDetector(
                         onTap: () => filter == 6 ? null : setState(() { filter = 6; }),
                         child: Container(
@@ -221,7 +241,7 @@ class GraficoLine extends State<Grafico> {
                             color: filter == 6 ? Color.fromRGBO(215, 0, 0, 1) : Colors.white
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(5.5),
                             child: Text(
                               "5A",
                               style: TextStyle(
@@ -235,26 +255,6 @@ class GraficoLine extends State<Grafico> {
                   ],
                 )
               ),
-              Expanded(
-                child: Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: AnimatedLineChart(
-                            chart,
-                            key: UniqueKey(),
-                          ),
-                        )
-                      )
-                    ]
-                  ),
-                ),
-              )
             ])
           );
         }

@@ -45,7 +45,6 @@ class MessageHandlerState extends State<MessageHandler> {
     super.initState();
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: " + message.toString());
         Flushbar(
           flushbarPosition: FlushbarPosition.TOP,
           flushbarStyle: FlushbarStyle.GROUNDED,

@@ -152,128 +152,143 @@ class HomeForm extends State<Home> {
             },
             child: Padding(
               padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-              child: Card(
               child: Container(
-                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(
-                    bottom: BorderSide(
-                      width: index != _lista.length ? 0.5 : 0,
-                      color: Colors.black12
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.red.withOpacity(.5),
+                      blurRadius: 2,
+                      spreadRadius: -3.5,
+                      offset: Offset(
+                        .5,
+                        .5,
+                      ),
                     )
-                  ),
+                  ],
                 ),
-                child: Padding(
-                  padding: EdgeInsets.only(top: 10, left: 15, bottom: 10, right: 5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 15),
-                              child: Align(
+                child: Card(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      bottom: BorderSide(
+                        width: index != _lista.length ? 0.5 : 0,
+                        color: Colors.black12
+                      )
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, left: 15, bottom: 10, right: 5),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 15),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    item.ticker.toString(),
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  )
+                                ),
+                              ),
+                              Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  item.ticker.toString(),
+                                  item.name,
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 13,
+                                    color: Colors.black38
                                   ),
                                 )
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                item.name,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.black38
-                                ),
                               )
-                            )
-                          ]
-                        )
-                      ),
-                      Expanded(
-                        flex: 6,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: Text(
-                                      item.value.toString(),
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18
-                                      ),
+                            ]
+                          )
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 5),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: Text(
+                                        item.value.toString(),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18
+                                        ),
+                                      )
                                     )
                                   )
-                                )
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: item.higher != null ? Icon(
-                                          item.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                                          size: 50,
-                                          color: item.higher == true ? Colors.green : Colors.red
-                                        ) : Text("")
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 10),
-                                        child: Align(
+                              Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Align(
                                           alignment: Alignment.centerRight,
-                                          child: Text(
-                                            item.percentage != null ? item.percentage.toString() + "%" : "0%",
-                                            style: TextStyle(color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red),
+                                          child: item.higher != null ? Icon(
+                                            item.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                                            size: 50,
+                                            color: item.higher == true ? Colors.green : Colors.red
+                                          ) : Text("")
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10),
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Text(
+                                              item.percentage != null ? item.percentage.toString() + "%" : "0%",
+                                              style: TextStyle(color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red),
+                                            )
                                           )
                                         )
-                                      )
-                                    ]
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Align(
-                          alignment: Alignment.centerRight, 
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 18,
-                            color: Colors.black38
+                                      ]
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                      )
-                    ],
-                  )
-                ),
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                            alignment: Alignment.centerRight, 
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                              color: Colors.black38
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  ),
+                )
               )
-            ))
-          );
+            )
+          ));
         }
       )
     );
