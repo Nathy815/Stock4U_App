@@ -8,6 +8,7 @@ import 'package:signalr_client/signalr_client.dart';
 import 'components/stock4_u_icons.dart' as CustomIcons;
 import 'models/acaoModel.dart';
 import 'noticias.dart';
+import 'trends.dart';
 
 class Home extends StatefulWidget {
   HomeForm createState() => HomeForm();
@@ -64,6 +65,10 @@ class HomeForm extends State<Home> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 0,
+        unselectedFontSize: 0,
+        selectedItemColor: Color.fromRGBO(215, 0, 0, 1),
+        unselectedItemColor: Colors.black54,
+        currentIndex: 0,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -71,6 +76,10 @@ class HomeForm extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(CustomIcons.Stock4U.newspaper),
+            label: ""
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CustomIcons.Stock4U.hotjar),
             label: ""
           ),
           BottomNavigationBarItem(
@@ -85,6 +94,11 @@ class HomeForm extends State<Home> {
             Navigator.of(context).push(_createRoute(Noticias()));
           }
           else if (value == 2)
+          {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(_createRoute(Trends()));
+          }
+          else if (value == 3)
           {
             Navigator.of(context).pop();
             Navigator.of(context).push(_createRoute(Perfil()));

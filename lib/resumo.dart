@@ -176,88 +176,12 @@ class ResumoForm extends State<Resumo> {
                 viewportFraction: 1.0,
                 height: 300,
                 items: [
-                  Column(
+                  Container(
+                    color: Color.fromRGBO(245, 245, 245, 1),
+                    child: Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 20, bottom: 20),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: acao.itens[4].higher != null ? Icon(
-                                            acao.itens[4].higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                                            size: 50,
-                                            color: acao.itens[4].higher == true ? Colors.green : Colors.red
-                                          ) : Text("")
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 10),
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              acao.itens[4].value != null ? acao.itens[4].value.toString() : "-",
-                                              style: TextStyle(color: acao.itens[4].higher == null ? Colors.blue : acao.itens[4].higher == true ? Colors.green : Colors.red),
-                                            )
-                                          )
-                                        )
-                                      ]
-                                    ),
-                                    /*Padding(
-                                      padding: EdgeInsets.zero,
-                                      child: Text(
-                                        acao.itens[4].label,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey
-                                        )
-                                      )
-                                    )*/
-                                  ]
-                                )
-                              ),
-                            )
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 20, bottom: 20),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: acao.itens[3].higher != null ? Icon(
-                                        acao.itens[3].higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                                        size: 50,
-                                        color: acao.itens[3].higher == true ? Colors.green : Colors.red
-                                      ) : Text("")
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 10),
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(
-                                          acao.itens[3].percentage != null ? acao.itens[3].percentage.toString() + "%" : "0%",
-                                          style: TextStyle(color: acao.itens[3].higher == null ? Colors.blue : acao.itens[3].higher == true ? Colors.green : Colors.red),
-                                        )
-                                      )
-                                    )
-                                  ]
-                                )
-                              ),
-                            )
-                          )
-                        ],
-                      ),
                       Center(
                         child: Text(
                           acao.itens[3].value.toString(),
@@ -267,6 +191,29 @@ class ResumoForm extends State<Resumo> {
                             fontWeight: FontWeight.w500
                           )
                         ),
+                      ),
+                      Center(
+                        child: Text(
+                          "" + acao.itens[3].percentage.toString() + "%  |  " + acao.itens[4].valueToString(),
+                          style: TextStyle(
+                            color: acao.itens[3].higher == null ? Colors.blue : acao.itens[3].higher ? Colors.green : Colors.red,
+                            fontSize: 18
+                          )
+                        )
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 7, bottom: 7),
+                        child: Container(
+                          width: 135,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: acao.itens[0].higher == null ? Colors.blue : acao.itens[0].higher ? Colors.green : Colors.red,
+                                width: 3
+                              )
+                            )
+                          )
+                        )
                       ),
                       Center(
                         child: Text(
@@ -423,31 +370,11 @@ class ResumoForm extends State<Resumo> {
                         )
                       )
                     ],
-                  ),
+                  ))),
                   Grafico(widget.equityID)
                 ],
               )
             ),
-            /*CarouselSlider.builder(
-              options: CarouselOptions(
-                height: 350,
-                enlargeCenterPage: true,
-                enableInfiniteScroll: true
-              ),
-              itemCount: 2,
-              itemBuilder: (context, index) {
-                if (index == 0)
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Text("Page 1")
-                  );
-                else 
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Grafico(widget.equityID)
-                  );
-              }
-            ),*/
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [

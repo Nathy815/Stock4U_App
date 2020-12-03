@@ -5,6 +5,7 @@ import 'components/stock4_u_icons.dart' as CustomIcons;
 import 'components/webView.dart';
 import 'home.dart';
 import 'perfil.dart';
+import 'trends.dart';
 
 class Noticias extends StatefulWidget {
   NoticiasList createState() => NoticiasList();
@@ -26,6 +27,8 @@ class NoticiasList extends State<Noticias> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 0,
+        selectedItemColor: Color.fromRGBO(215, 0, 0, 1),
+        unselectedItemColor: Colors.black54,
         currentIndex: 1,
         items: [
           BottomNavigationBarItem(
@@ -34,6 +37,10 @@ class NoticiasList extends State<Noticias> {
           ),
           BottomNavigationBarItem(
             icon: Icon(CustomIcons.Stock4U.newspaper),
+            label: ""
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CustomIcons.Stock4U.hotjar),
             label: ""
           ),
           BottomNavigationBarItem(
@@ -48,6 +55,11 @@ class NoticiasList extends State<Noticias> {
             Navigator.of(context).push(_createRoute(Home()));
           }
           else if (value == 2)
+          {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(_createRoute(Trends()));
+          }
+          else if (value == 3)
           {
             Navigator.of(context).pop();
             Navigator.of(context).push(_createRoute(Perfil()));

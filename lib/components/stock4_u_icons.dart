@@ -8,4 +8,5 @@ class Stock4U {
 
   static const IconData newspaper = IconData(0xf1ea, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData transgender = IconData(0xf224, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData hotjar = IconData(0xf3b1, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

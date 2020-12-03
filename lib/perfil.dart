@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'perfil/editPerfil.dart';
 import 'noticias.dart';
+import 'trends.dart';
 
 class Perfil extends StatefulWidget {
   PerfilForm createState() => PerfilForm();
@@ -97,7 +98,9 @@ class PerfilForm extends State<Perfil> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 0,
-        currentIndex: 2,
+        selectedItemColor: Color.fromRGBO(215, 0, 0, 1),
+        unselectedItemColor: Colors.black54,
+        currentIndex: 3,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -105,7 +108,11 @@ class PerfilForm extends State<Perfil> {
           ),
           BottomNavigationBarItem(
             icon: Icon(CustomIcons.Stock4U.newspaper),
-            label: "",
+            label: ""
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CustomIcons.Stock4U.hotjar),
+            label: ""
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -122,6 +129,11 @@ class PerfilForm extends State<Perfil> {
           {
             Navigator.of(context).pop();
             Navigator.of(context).push(_createRoute(Noticias()));
+          }
+          else if (value == 2)
+          {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(_createRoute(Trends()));
           }
         },
       ),
