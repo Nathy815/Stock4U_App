@@ -4,8 +4,16 @@ import 'home.dart';
 import 'noticias.dart';
 import 'components/stock4_u_icons.dart' as CustomIcons;
 import 'perfil.dart';
+import 'components/projection.dart';
 
-class Trends extends StatelessWidget {
+class Trends extends StatefulWidget {
+  TrendsTable createState() => TrendsTable();
+}
+
+class TrendsTable extends State<Trends> {
+  double start = 16.02, raise = 9.9;
+  int index = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,167 +70,225 @@ class Trends extends StatelessWidget {
       ),
       body: Column(
         children: [
-          /*Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.red,
-            child: Text("2021"),
-          ),*/
-          Table(
-            border: TableBorder(
-              horizontalInside: BorderSide(
-                color: Colors.grey,
-                width: 0.5
-              )
-            ),
-            children: [
-              TableRow(
-                children: ("Posição,Ticker,Nome,Valor").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name,
-                        style: TextStyle(
-                          color: Color.fromRGBO(215, 0, 0, 1),
-                          fontWeight: FontWeight.w500
+          Projection(value: start, raise: raise),
+          SingleChildScrollView(
+            child: Table(
+              border: TableBorder(
+                horizontalInside: BorderSide(
+                  color: Colors.grey,
+                  width: 0.5
+                )
+              ),
+              children: [
+                TableRow(
+                  children: ("Posição,Ticker,Nome,Aumento (%)").split(",").map((name) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Text(
+                          name,
+                          style: TextStyle(
+                            color: Color.fromRGBO(215, 0, 0, 1),
+                            fontWeight: FontWeight.w500
+                          )
                         )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#1,TIET11,AES Tietê,9.9%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 1 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("1,TIET11,AES Tietê,9.9%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 1; start = 16.02; raise = 9.9; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#2,SANB11,Santander Brasil,8.6%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 2 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("2,SANB11,Santander Brasil,8.6%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 2; start = 41.31; raise = 8.6; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#3,EGIE3,Engie,8%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 3 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("3,EGIE3,Engie,8%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 3; start = 42.88; raise = 8; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#4,BBAS3,Banco do Brasil,8%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 4 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("4,BBAS3,Banco do Brasil,8%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 4; start = 35.24; raise = 8; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#5,SAPR11,Sanepar,7.6%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 5 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("5,SAPR11,Sanepar,7.6%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 5; start = 27.24; raise = 7.6; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#6,CCRO3,CCR,7.2%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 6 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("6,CCRO3,CCR,7.2%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 6; start = 14.24; raise = 7.2; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#7,VALE3,Vale,7.2%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 7 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("7,VALE3,Vale,7.2%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 7; start = 78.96; raise = 7.2; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#8,ITUB4,Itaú,7.1%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 8 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("8,ITUB4,Itaú,7.1%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 8; start = 29.96; raise = 7.1; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#9,TRPL4,Transmissão Paulista,7.1%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 9 ? Color.fromRGBO(215, 0, 0, 0.15): Colors.white
+                  ),
+                  children: ("9,TRPL4,Transmissão Paulista,7.1%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 9; start = 26.94; raise = 7.1; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              ),
-              TableRow(
-                children: ("#10,BBDC4,Bradesco,7%").split(",").map((name) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        name
+                    );
+                  }).toList()
+                ),
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: index == 10 ? Color.fromRGBO(215, 0, 0, 0.15) : Colors.white
+                  ),
+                  children: ("10,BBDC4,Bradesco,7%").split(",").map((name) {
+                    return GestureDetector(
+                      onTap: () => setState(() { index = 10; start = 25.58; raise = 7; }),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            name
+                          )
+                        )
                       )
-                    )
-                  );
-                }).toList()
-              )
-            ],
+                    );
+                  }).toList()
+                )
+              ],
+            )
           )
         ]
       )

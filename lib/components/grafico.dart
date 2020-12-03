@@ -11,7 +11,7 @@ class Grafico extends StatefulWidget {
   GraficoLine createState() => GraficoLine();
 }
 
-class GraficoLine extends State<Grafico> {
+class GraficoLine extends State<Grafico>  {
   List<String> filters = ["day", "week", "month", "threeMonths", "sixMonths", "year", "fiveYears"];
   int filter;
 
