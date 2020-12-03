@@ -128,7 +128,8 @@ class TrendsTable extends State<Trends> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Text(
-                            name
+                            name,
+                            textAlign: TextAlign.center,
                           )
                         )
                       )
@@ -147,7 +148,8 @@ class TrendsTable extends State<Trends> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Text(
-                            name
+                            name,
+                            textAlign: TextAlign.center
                           )
                         )
                       )
@@ -166,7 +168,8 @@ class TrendsTable extends State<Trends> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Text(
-                            name
+                            name,
+                            textAlign: TextAlign.center,
                           )
                         )
                       )
@@ -261,7 +264,8 @@ class TrendsTable extends State<Trends> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Text(
-                            name
+                            name,
+                            textAlign: TextAlign.center,
                           )
                         )
                       )

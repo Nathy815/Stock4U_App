@@ -7,9 +7,9 @@ class FakeChartSeries {
   Map<DateTime, double> createLine(double start, double raise) {
     double value = start + (start * (100 + raise) / 100);
     Map<DateTime, double> data = {};
-    for(var dia = 1; dia < 180; dia ++)
+    for(var dia = 1; dia < 90; dia ++)
       data[DateTime.now().add(Duration(days: dia))] = doubleInRange(new Random(), start - 30, value + 30);
-    data[DateTime.now().add(Duration(days: 180))] = value;
+    data[DateTime.now().add(Duration(days: 90))] = value;
     return data;
   }
 
