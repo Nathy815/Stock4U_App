@@ -57,7 +57,7 @@ class AcaoService {
   Future<AcaoModel> get(String equityID) async {
     var prefs = await SharedPreferences.getInstance();
     var _body = json.encode({ "UserID": prefs.getString("userID"), "EquityID": equityID});
-    print(_body.toString());
+
     var _result = await http.post(_apiURL + "api/equity/get",
                                   headers: {
                                     'Content-Type': 'application/json',

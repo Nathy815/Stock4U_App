@@ -172,7 +172,7 @@ class ResumoForm extends State<Resumo> {
                                         Padding(
                                           padding: EdgeInsets.only(top: 5, bottom: 5),
                                           child: Text(
-                                            "(" + (acao.itens[0].higher == null ? "" : acao.itens[0].higher == true ? "+ " : "- ") + acao.itens[0].percentage.toString() + "%)",
+                                            "(" + acao.itens[0].percentage.toString() + "%)",
                                             style: TextStyle(
                                               color: acao.itens[0].higher == null ? Colors.blue : acao.itens[0].higher ? Colors.green : Colors.red,
                                             )
@@ -218,7 +218,7 @@ class ResumoForm extends State<Resumo> {
                                         Padding(
                                           padding: EdgeInsets.only(top: 5, bottom: 5),
                                           child: Text(
-                                            "(" + (acao.itens[1].higher == null ? "" : acao.itens[1].higher == true ? "+ " : "- ") + acao.itens[0].percentage.toString() + "%)",
+                                            "(" + acao.itens[1].percentage.toString() + "%)",
                                             style: TextStyle(
                                               color: acao.itens[1].higher == null ? Colors.blue : acao.itens[1].higher ? Colors.green : Colors.red,
                                             )
@@ -264,7 +264,7 @@ class ResumoForm extends State<Resumo> {
                                         Padding(
                                           padding: EdgeInsets.only(top: 5, bottom: 5),
                                           child: Text(
-                                            "(" + (acao.itens[2].higher == null ? "" : acao.itens[2].higher == true ? "+ " : "- ") + acao.itens[0].percentage.toString() + "%)",
+                                            "(" + acao.itens[2].percentage.toString() + "%)",
                                             style: TextStyle(
                                               color: acao.itens[2].higher == null ? Colors.blue : acao.itens[2].higher ? Colors.green : Colors.red,
                                             )
@@ -356,7 +356,7 @@ class ResumoForm extends State<Resumo> {
                 ),
                 Container(
                   width: 1,
-                  height: 84,
+                  height: 88,
                   color: Color.fromRGBO(215, 0, 0, 1)
                 ),
                 Expanded(
