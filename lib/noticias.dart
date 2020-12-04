@@ -71,7 +71,25 @@ class NoticiasList extends State<Noticias> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.length == 0)
-              return Center(child: Text("Não há notícias para exibir."));
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage("assets/images/no_results.png"),
+                      width: 200
+                    ),
+                    Text(
+                      "Sem resultados",
+                      style: TextStyle(
+                        color: Color.fromRGBO(215, 0, 0, 0.2),
+                        fontWeight: FontWeight.w500
+                      )
+                    )
+                  ]
+                )
+              );
             else
               return Padding(
                 padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
@@ -130,7 +148,25 @@ class NoticiasList extends State<Noticias> {
             );
           }
           else if (snapshot.hasError)
-            return Center(child: Text("Não foi possível carregar as notícias."));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image(
+                    image: AssetImage("assets/images/error.png"),
+                    width: 200
+                  ),
+                  Text(
+                    "Desculpe! Tente novamente mais tarde.",
+                    style: TextStyle(
+                      color: Color.fromRGBO(215, 0, 0, 0.2),
+                      fontWeight: FontWeight.w500
+                    )
+                  )
+                ]
+              )
+            );
           else
             return Center(child: CircularProgressIndicator());
         },

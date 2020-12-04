@@ -165,7 +165,25 @@ class AcoesForm extends State<Acoes> {
               ) :
               SizedBox(
                 height: MediaQuery.of(context).size.height / 1.3,
-                child: Center(child: Text("Não há ações para exibir"))
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image(
+                        image: AssetImage("assets/images/no_results.png"),
+                        width: 200
+                      ),
+                      Text(
+                        "Sem resultados",
+                        style: TextStyle(
+                          color: Color.fromRGBO(215, 0, 0, 0.2),
+                          fontWeight: FontWeight.w500
+                        )
+                      )
+                    ]
+                  )
+                )
               )
             ],
           )

@@ -33,7 +33,6 @@ class NotasForm extends State<Notas> {
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
-            print('ticker notas back: ' + widget.ticker);
             Navigator.of(context).push(_createRoute(Resumo(equityID: widget.equityID, ticker: widget.ticker)));
           },
           icon: Icon(
@@ -56,7 +55,25 @@ class NotasForm extends State<Notas> {
         builder: (context2, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.length == 0)
-              return Center(child: Text("Essa ação não possui notas."));
+              return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image(
+                    image: AssetImage("assets/images/no_results.png"),
+                    width: 200
+                  ),
+                  Text(
+                    "Sem resultados",
+                    style: TextStyle(
+                      color: Color.fromRGBO(215, 0, 0, 0.2),
+                      fontWeight: FontWeight.w500
+                    )
+                  )
+                ]
+              )
+            );
             else
               return ListView.builder(
                 itemCount: snapshot.data.length,
@@ -261,7 +278,25 @@ class NotasForm extends State<Notas> {
               );
           }
           else if (snapshot.hasError)
-            return Center(child: Text("Não foi possível carregar as notas."));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image(
+                    image: AssetImage("assets/images/error.png"),
+                    width: 200
+                  ),
+                  Text(
+                    "Desculpe! Tente novamente mais tarde.",
+                    style: TextStyle(
+                      color: Color.fromRGBO(215, 0, 0, 0.2),
+                      fontWeight: FontWeight.w500
+                    )
+                  )
+                ]
+              )
+            );
           else
             return Center(child: CircularProgressIndicator());
         },

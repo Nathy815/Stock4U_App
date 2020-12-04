@@ -454,7 +454,25 @@ class ResumoForm extends State<Resumo> {
             ),
             Expanded(
               child: acoes == null || acoes.length == 0 ?
-              Center(child: Text("Não há ações para comparar")) :
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage("assets/images/no_results.png"),
+                      width: 150
+                    ),
+                    Text(
+                      "Sem resultados",
+                      style: TextStyle(
+                        color: Color.fromRGBO(215, 0, 0, 0.2),
+                        fontWeight: FontWeight.w500
+                      )
+                    )
+                  ]
+                )
+              ) :
               ListView.builder(
                 itemCount: acoes.length,
                 itemBuilder: (context, index) {
