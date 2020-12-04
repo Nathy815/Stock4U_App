@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'services/acaoService.dart';
 import 'models/acaoModel.dart';
 import 'components/grafico.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:getwidget/getwidget.dart';
 import 'notas.dart';
 import 'acoes.dart';
@@ -357,7 +356,7 @@ class ResumoForm extends State<Resumo> {
                 ),
                 Container(
                   width: 1,
-                  height: 88,
+                  height: 84,
                   color: Color.fromRGBO(215, 0, 0, 1)
                 ),
                 Expanded(
@@ -606,24 +605,6 @@ class ResumoForm extends State<Resumo> {
                                                 )
                                               ]
                                             ),
-                                            /*Align(
-                                              alignment: Alignment.centerRight,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(7),
-                                                  child: Text(
-                                                    item.percentage != null ? item.percentage.toString() + "%" : "0%",
-                                                    style: TextStyle(
-                                                      color: Colors.white
-                                                    )
-                                                  ),
-                                                )
-                                              )
-                                            )*/
                                           ],
                                         ),
                                       )
