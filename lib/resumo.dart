@@ -96,77 +96,6 @@ class ResumoForm extends State<Resumo> {
                 )
               )
             ),
-            /*Container(
-              width: MediaQuery.of(context).size.width,
-              height: 100,
-              alignment: Alignment.center,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.all(0),
-                itemCount: itens.length,
-                itemBuilder: (context, index) {
-                  var item = itens[index];
-                  return Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 5, right: 5),
-                      child: Column(
-                        children: [
-                          Text(
-                            item.label,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black45
-                            )
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 5, bottom: 5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(7),
-                                child: Text(
-                                  item.value != null ? item.value.toString() : "0",
-                                  style: TextStyle(
-                                    color: Colors.white
-                                  )
-                                ),
-                              )
-                            )
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Align(
-                                alignment: Alignment.center,
-                                child: item.higher != null ? Icon(
-                                  item.higher == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                                  size: 25,
-                                  color: item.higher == true ? Colors.green : Colors.red
-                                ) : Text("")
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    item.percentage != null ? item.percentage.toString() + "%" : "0%",
-                                    style: TextStyle(color: item.higher == null ? Colors.blue : item.higher == true ? Colors.green : Colors.red),
-                                  )
-                                )
-                              )
-                            ]
-                          ),
-                        ],
-                      )
-                    )
-                  );
-                }
-              )
-            ),*/
             Padding(
               padding: EdgeInsets.only(top: 15, bottom: 15),
               child: GFCarousel(
@@ -177,7 +106,7 @@ class ResumoForm extends State<Resumo> {
                 height: 300,
                 items: [
                   Container(
-                    color: Color.fromRGBO(245, 245, 245, 1),
+                    //color: Color.fromRGBO(245, 245, 245, 1),
                     child: Padding(
                       padding: EdgeInsets.all(15),
                       child: Column(

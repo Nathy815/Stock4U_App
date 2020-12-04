@@ -16,47 +16,41 @@ class UsuarioService {
   final String _apiURL = 'http://ec2-52-67-44-12.sa-east-1.compute.amazonaws.com/stock_api/';
 
   Future<String> login(String email, String senha) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: senha);
+    var _mensagem = "";
+
+    await _auth.signInWithEmailAndPassword(email: email, password: senha).then((value) async {
       var _result = await findByEmail(email);
-      
+      print('sucesso');
       if (_result == 200)
       {
         if (_auth.currentUser != null)
           await salvarInformacao('userToken', await _auth.currentUser.getIdToken());
-        return null;
+        _mensagem = null;
       }
       else {
         if (_auth.currentUser != null) await _auth.signOut();
         if (_result == 400)
-          return "E-mail e/ou senha inválido(s).";
+          _mensagem = "E-mail e/ou senha inválido(s).";
 
-        print('login: ' + _result.toString());
-        return "Falha ao logar usuário. Tente novamente mais tarde.";
+        _mensagem = "Falha ao logar usuário. Tente novamente mais tarde.";
       }
-    }
-    catch(e) {
-      var mensagem = "";
-      switch (e.code) {
-        case "ERROR_INVALID_EMAIL":
-          mensagem = "E-mail inválido!";
-          break;
-        case "ERROR_WRONG_PASSWORD":
-          mensagem = "Senha incorreta!";
-          break;
-        case "ERROR_USER_NOT_FOUND":
-          mensagem = "Usuário não cadastrado!";
-          break;
-        case "ERROR_USER_DISABLED":
-          mensagem = "Usuário não cadastrado!";
-          break;
-        default:
-          mensagem = "Ocorreu um erro. Tente novamente mais tarde.";
-          break;
-      }
+    }).catchError((error) {
+      var erro = error.toString().toUpperCase();
+      print(erro);
+      
+      if (erro.contains("INVALID-EMAIL"))
+        _mensagem = "E-mail inválido!";
+      else if (erro.contains("WRONG-PASSWORD"))
+        _mensagem = "Senha incorreta!";
+      else if (erro.contains("USER-NOT-FOUND"))
+        _mensagem = "Usuário não cadastrado!";
+      else if (erro.contains("USER-DISABLED"))
+        _mensagem = "Usuário não cadastrado!";
+      else
+        _mensagem = "Ocorreu um erro. Tente novamente mais tarde.";
+    });
 
-      return mensagem;
-    }
+    return _mensagem;
   }
 
   Future<String> loginWithFacebook() async {
@@ -271,9 +265,10 @@ class UsuarioService {
                                     });
 
     if (_result.statusCode == 200) {
-      await _auth.currentUser.delete();
-      await deleteInformacoes();
-      return true;
+      await _auth.currentUser.delete().then((value) async {
+        await deleteInformacoes();
+        return true;
+      });
     }
 
     return false;
